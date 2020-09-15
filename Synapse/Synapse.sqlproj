@@ -206,5 +206,6 @@
       <QuotedIdentifier>Off</QuotedIdentifier>
     </Build>
     <Build Include="Security\Permissions.sql" />
+    <Build Include="Security\01MasterKey.sql" />
   </ItemGroup>
 </Project>
