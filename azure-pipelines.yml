@@ -43,6 +43,3 @@ steps:
 #     DeploymentAction: 'Script'
 #     DacpacFile: 'temporal.dacpac'
 #     IpDetectionMethod: 'AutoDetect'
-- task: VSBuild@1
-  inputs:
-    solution: '**\*.sln'
