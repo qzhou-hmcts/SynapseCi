@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [SGTest]
+    AUTHORIZATION [qen61q];
+

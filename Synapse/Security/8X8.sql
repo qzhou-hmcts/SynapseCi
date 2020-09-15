@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [8X8]
+    AUTHORIZATION [dbo];
+

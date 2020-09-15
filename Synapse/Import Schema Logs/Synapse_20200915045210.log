@@ -1,0 +1,31 @@
+15/09/2020 17:52:10	This log contains information about the import schema operation into project 'Synapse' on computer 'DESKTOP-2N1IM46' by user 'Elena'.
+15/09/2020 17:52:10	Import of database schema has started.
+15/09/2020 17:52:12	Gathering logins
+15/09/2020 17:52:15	Gathering database credentials
+15/09/2020 17:52:15	Gathering database options
+15/09/2020 17:52:15	Gathering users
+15/09/2020 17:52:15	Gathering roles
+15/09/2020 17:52:15	Gathering role memberships
+15/09/2020 17:52:15	Gathering symmetric keys
+15/09/2020 17:52:15	Gathering schemas
+15/09/2020 17:52:15	Gathering functions
+15/09/2020 17:52:15	Gathering procedures
+15/09/2020 17:52:16	Gathering partition table specification
+15/09/2020 17:52:16	Gathering tables
+15/09/2020 17:52:19	Gathering primary keys
+15/09/2020 17:52:19	Gathering unique constraints
+15/09/2020 17:52:19	Gathering default constraints
+15/09/2020 17:52:19	Gathering views
+15/09/2020 17:52:19	Gathering indexes
+15/09/2020 17:52:19	Gathering statistics
+15/09/2020 17:52:19	Gathering column store indexes
+15/09/2020 17:52:20	Gathering external data sources
+15/09/2020 17:52:20	Gathering external file formats
+15/09/2020 17:52:20	Gathering external tables
+15/09/2020 17:52:20	Gathering database permissions
+15/09/2020 17:52:22	Gathering logins
+15/09/2020 17:52:24	Scanning project for duplicate elements
+15/09/2020 17:52:25	Finished duplicate element processing
+15/09/2020 17:52:26	Finished importing database.
+15/09/2020 17:52:26	A summary of the import was saved to the following location: C:\Users\Elena\source\repos\qzhou-hmcts\SynapseCi\Synapse\Import Schema Logs\Synapse_20200915045210.log
+15/09/2020 17:52:26	Click Finish to continue...

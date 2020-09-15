@@ -1,0 +1,3 @@
+﻿CREATE DATABASE SCOPED CREDENTIAL [dsc_ccd]
+    WITH IDENTITY = N'user';
+

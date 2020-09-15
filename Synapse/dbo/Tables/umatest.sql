@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[umatest] (
+    [userid]    VARCHAR (25)  NOT NULL,
+    [Firstname] VARCHAR (200) NULL
+)
+WITH (CLUSTERED COLUMNSTORE INDEX, DISTRIBUTION = ROUND_ROBIN);
+

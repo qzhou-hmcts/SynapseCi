@@ -1,0 +1,3 @@
+﻿CREATE DATABASE SCOPED CREDENTIAL [AzureStorageCredential]
+    WITH IDENTITY = N'user';
+
