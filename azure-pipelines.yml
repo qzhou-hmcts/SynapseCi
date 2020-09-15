@@ -6,6 +6,12 @@
 trigger:
 - master
 
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - master
+      
 pool:
   vmImage: 'windows-latest'
 
