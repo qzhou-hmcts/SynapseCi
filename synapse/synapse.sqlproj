@@ -85,6 +85,7 @@
     <DatabaseAccess>MULTI_USER</DatabaseAccess>
     <Recovery>SIMPLE</Recovery>
     <EnableFullTextSearch>False</EnableFullTextSearch>
+    <GenerateCreateScript>False</GenerateCreateScript>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -107,7 +108,8 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>0</WarningLevel>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
@@ -121,10 +123,23 @@
     <Folder Include="Properties" />
     <Folder Include="Security\" />
     <Folder Include="Security\users" />
+    <Folder Include="External Resources\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\MasterKey1.sql" />
     <Build Include="Security\users\PipelineLogin.sql" />
     <Build Include="Security\users\PipelineUser.sql" />
+    <Build Include="Security\notify.sql" />
+    <Build Include="External Resources\uncompressedcsv.sql" />
+    <Build Include="External Resources\csvwithheader.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="PipelinePassword">
+      <DefaultValue>password</DefaultValue>
+      <Value>$(SqlCmdVar__1)</Value>
+    </SqlCmdVariable>
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
 </Project>

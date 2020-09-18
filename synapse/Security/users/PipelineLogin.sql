@@ -1,1 +1,1 @@
-﻿CREATE LOGIN pipeline WITH PASSWORD = '$(PipelinePassword)'
+﻿CREATE LOGIN pipeline WITH PASSWORD = '$(PipelinePassworasd)asdf'
