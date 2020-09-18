@@ -1,3 +1,0 @@
-﻿CREATE SCHEMA [MDM]
-    AUTHORIZATION [dbo];
-

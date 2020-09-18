@@ -1,3 +1,0 @@
-﻿CREATE SCHEMA [CCDBASE]
-    AUTHORIZATION [dbo];
-

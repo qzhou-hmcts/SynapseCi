@@ -1,2 +1,0 @@
-﻿CREATE USER [qen61q] FOR LOGIN [qen61q];
-

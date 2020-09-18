@@ -1,6 +1,0 @@
-﻿CREATE TABLE [dbo].[QZ_pipeline_test] (
-    [col1] INT NULL,
-    [col2] INT NULL
-)
-WITH (CLUSTERED COLUMNSTORE INDEX, DISTRIBUTION = ROUND_ROBIN);
-
