@@ -15,7 +15,6 @@ variables:
   buildConfiguration: 'Release'
   sqlDwPath: 'synapse'
   azure.subscription.endpoint: 'DTS-SHAREDSERVICES-TEST'
-  sqlsrvrName: ''
 
 stages:
 - stage: 'validate'
@@ -67,9 +66,6 @@ stages:
             inputs:
               downloadPath: $(System.ArtifactsDirectory)
               artifactName: 'sql_dw_dacpac'
-          - task: CmdLine@2
-            inputs:
-              script: 'dir /s $(Agent.BuildDirectory)' 
           - task: CmdLine@2
             inputs:
               script: 'dir /s $(System.ArtifactsDirectory)' 
