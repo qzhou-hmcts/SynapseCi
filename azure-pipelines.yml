@@ -65,6 +65,9 @@ stages:
             inputs:
               # artifact: 'sql_dw_dacpac'
               path: $(Build.SourcesDirectory)\bin
+          - task: CmdLine@2
+            inputs:
+              script: 'dir /s' 
           # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/sql-azure-dacpac-deployment?view=azure-devops
           - task: SqlAzureDacpacDeployment@1
             inputs:
