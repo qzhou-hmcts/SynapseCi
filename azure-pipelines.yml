@@ -79,19 +79,8 @@ stages:
               SqlUsername: '$(sqlsrvrUsername)'
               SqlPassword: '$(sqlsrvrPassword)'
               deployType: 'DacpacTask'
-              DacpacFile: '$(System.ArtifactsDirectory)\sql_dw_dacpac\synapse.dacpac' #'$(Pipeline.Workspace)/s/synapse/bin/Release/synapse.dacpac' 
+              DacpacFile: '$(System.ArtifactsDirectory)\sql_dw_dacpac\synapse.dacpac' 
               AdditionalArguments: '/Variables:PipelinePassword=$(pipelinePassword)'
             displayName: 'Azure SQL Dacpac'
 
-    # - task: SqlAzureDacpacDeployment@1
-    #   inputs:
-    #     AuthenticationType: 'server'
-    #     ServerName: 'mi-datawarehouse-server-sbox'
-    #     DatabaseName: 'datawarehouse-db-sbox'
-    #     SqlUsername: 'login_user'
-    #     SqlPassword: 'login_password'
-    #     deployType: 'DacpacTask'
-    #     DeploymentAction: 'Script'
-    #     DacpacFile: 'temporal.dacpac'
-    #     IpDetectionMethod: 'AutoDetect'
  
