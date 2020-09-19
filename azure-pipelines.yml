@@ -62,9 +62,9 @@ stages:
         deploy:
           steps:
           - task: DownloadPipelineArtifact@2
-            inputs:
+            # inputs:
               # artifact: 'sql_dw_dacpac'
-              path: $(Build.SourcesDirectory)\bin
+              # path: $(Build.SourcesDirectory)\bin
           - task: CmdLine@2
             inputs:
               script: 'dir /s' 
