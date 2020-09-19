@@ -64,6 +64,7 @@ stages:
           - task: DownloadBuildArtifacts@0
             inputs:
               downloadPath: $(System.ArtifactsDirectory)
+              artifactName: 'sql_dw_dacpac'
           - task: CmdLine@2
             inputs:
               script: 'dir /s $(Agent.BuildDirectory)' 
