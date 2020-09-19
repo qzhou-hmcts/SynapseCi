@@ -14,7 +14,8 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   sqlDwPath: 'synapse'
-
+  azure.subscription.endpoint: 'DTS-SHAREDSERVICES-TEST'
+  sqlsrvrName: ''
 
 stages:
 - stage: 'validate'
@@ -48,6 +49,31 @@ stages:
         PathtoPublish: '$(sqlDwPath)/bin/$(buildConfiguration)/synapse.dacpac'
         ArtifactName: 'sql_dw_dacpac'
       displayName: 'Publish SQL DACPAC'  
+  
+  - deployment: deploy_azuresqldw
+    displayName: 'Deploy to AzureSQLDW'
+    pool:
+      vmImage: 'windows-latest'
+    variables:
+      sqlProjName: ddo_azuresqldw_dw
+    environment: $(environment)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/sql-azure-dacpac-deployment?view=azure-devops
+          - task: SqlAzureDacpacDeployment@1
+            inputs:
+              azureSubscription: $(azure.subscription.endpoint)
+              AuthenticationType: 'server'
+              ServerName: $(sqlsrvrName).database.windows.net
+              DatabaseName: $(sqlDwDatabaseName)
+              SqlUsername: '$(sqlsrvrUsername)'
+              SqlPassword: '$(sqlsrvrPassword)'
+              deployType: 'DacpacTask'
+              DacpacFile: '$(Pipeline.Workspace)/ciartifacts/sql_dw_dacpac/synapse.dacpac'
+              AdditionalArguments: '/Variables:PipelinePassword=$(pipelinePassword)'
+            displayName: 'Azure SQL Dacpac'
 
     # - task: SqlAzureDacpacDeployment@1
     #   inputs:
