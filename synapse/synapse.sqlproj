@@ -140,6 +140,7 @@
     </SqlCmdVariable>
   </ItemGroup>
   <ItemGroup>
+    <PreDeploy Include="Script.PreDeployment.sql" />  
     <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
 </Project>

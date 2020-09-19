@@ -1,7 +1,2 @@
-﻿use master
-go
-CREATE MASTER KEY; 
+﻿CREATE MASTER KEY; 
 --ENCRYPTION BY PASSWORD = ''
-go
-use '$(SqlDwDatabaseName)'
-go

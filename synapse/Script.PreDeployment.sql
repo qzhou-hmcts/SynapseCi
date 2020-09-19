@@ -11,9 +11,20 @@ Post-Deployment Script Template
 */
 
 :setvar PipelinePassword PipelinePassword
+:setvar SqlDwDatabaseName SqlDwDatabaseName
 
--- use master
--- go
--- ALTER LOGIN pipeline WITH PASSWORD = '$(PipelinePassword)'
--- use '$(SqlDwDatabaseName)'
--- go
+use master
+go
+IF NOT EXISTS
+    (
+        SELECT *
+        FROM sys.sql_logins
+        WHERE name = 'pipeline'
+    )
+
+    BEGIN
+        CREATE LOGIN pipeline WITH PASSWORD = '$(PipelinePassword)'
+    END
+
+use '$(SqlDwDatabaseName)'
+go
