@@ -63,7 +63,7 @@ stages:
           steps:
           - task: DownloadPipelineArtifact@2
             inputs:
-              artifact: 'sql_dw_dacpac'
+              artifact: '$(Agent.BuildDirectory)'
               path: $(Build.SourcesDirectory)
           - task: CmdLine@2
             inputs:
