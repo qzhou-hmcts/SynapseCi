@@ -52,6 +52,8 @@ stages:
   
   - deployment: deploy_azuresqldw
     displayName: 'Deploy to AzureSQLDW'
+    dependsOn: validate_sql_packages
+    condition: succeeded()
     pool:
       vmImage: 'windows-latest'
     variables:
