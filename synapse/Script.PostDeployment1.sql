@@ -9,3 +9,7 @@ Post-Deployment Script Template
                SELECT * FROM [$(TableName)]					
 --------------------------------------------------------------------------------------
 */
+
+:setvar PipelinePassword PipelinePassword
+
+ALTER LOGIN pipeline WITH PASSWORD = '$(PipelinePassword)'
