@@ -3,5 +3,5 @@ go
 CREATE MASTER KEY; 
 --ENCRYPTION BY PASSWORD = ''
 go
-use '$(sqlDwDatabaseName)'
+use '$(SqlDwDatabaseName)'
 go

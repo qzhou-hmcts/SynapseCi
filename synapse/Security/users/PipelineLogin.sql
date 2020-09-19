@@ -2,5 +2,5 @@
 go
 CREATE LOGIN pipeline WITH PASSWORD = '$(PipelinePassword)'
 go
-use '$(sqlDwDatabaseName)'
+use '$(SqlDwDatabaseName)'
 go

@@ -15,5 +15,5 @@ Post-Deployment Script Template
 use master
 go
 ALTER LOGIN pipeline WITH PASSWORD = '$(PipelinePassword)'
-use '$(sqlDwDatabaseName)'
+use '$(SqlDwDatabaseName)'
 go

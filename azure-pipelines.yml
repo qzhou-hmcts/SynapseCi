@@ -80,7 +80,7 @@ stages:
               SqlPassword: '$(sqlsrvrPassword)'
               deployType: 'DacpacTask'
               DacpacFile: '$(System.ArtifactsDirectory)\sql_dw_dacpac\synapse.dacpac' 
-              AdditionalArguments: '/Variables:PipelinePassword=$(pipelinePassword)'
+              AdditionalArguments: '/Variables:SqlDwDatabaseName=$(sqlDwDatabaseName) /Variables:PipelinePassword=$(pipelinePassword)'
             displayName: 'Azure SQL Dacpac'
 
  
