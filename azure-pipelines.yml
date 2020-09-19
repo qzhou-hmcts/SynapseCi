@@ -61,10 +61,10 @@ stages:
       runOnce:
         deploy:
           steps:
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              artifact: 'sql_dw_dacpac'
-              path: $(Build.SourcesDirectory)/bin
+          # - task: DownloadPipelineArtifact@2
+          #   inputs:
+          #     artifact: 'sql_dw_dacpac'
+          #     path: $(Build.SourcesDirectory)/bin
           # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/sql-azure-dacpac-deployment?view=azure-devops
           - task: SqlAzureDacpacDeployment@1
             inputs:
@@ -75,7 +75,7 @@ stages:
               SqlUsername: '$(sqlsrvrUsername)'
               SqlPassword: '$(sqlsrvrPassword)'
               deployType: 'DacpacTask'
-              DacpacFile: '$(Build.SourcesDirectory)/bin/synapse.dacpac'
+              DacpacFile: '$(Pipeline.Workspace)/s/synapse/bin/Release/synapse.dacpac'
               AdditionalArguments: '/Variables:PipelinePassword=$(pipelinePassword)'
             displayName: 'Azure SQL Dacpac'
 
