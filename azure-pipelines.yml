@@ -64,7 +64,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               # artifact: 'sql_dw_dacpac'
-              path: $(Build.SourcesDirectory)/bin
+              path: $(Build.SourcesDirectory)\bin
           # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/sql-azure-dacpac-deployment?view=azure-devops
           - task: SqlAzureDacpacDeployment@1
             inputs:
