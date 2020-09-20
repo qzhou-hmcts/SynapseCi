@@ -16,7 +16,6 @@ variables:
   sqlDwPath: 'synapse'
   azure.subscription.endpoint: 'DTS-SHAREDSERVICES-TEST'
   keyvault.name: 'mi-vault-test'
-  sqlDwDatabaseName: 'mi-datawarehouse-db-test'
 stages:
 - stage: 'build'
   displayName: 'Validate project'
@@ -59,7 +58,7 @@ stages:
       environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
       databaseServerName: $(sqlsrvrName)
-      databaseName: $(sqlDwDatabaseName)
+      databaseName: 'mi-datawarehouse-db-test'
       projectName: 'synapse'
       artifactName: 'sql_dw_dacpac'
 
