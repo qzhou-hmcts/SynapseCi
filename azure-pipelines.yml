@@ -77,7 +77,7 @@ stages:
       artifactName: 'sql_dw_dacpac'
       keyvaultName: 'mi-vault-stg'
 
-- stage: 'Deploy Prod'
+- stage: 'DeployProd'
   displayName: 'Deploy production'
   condition: and(succeeded('DeployStaging'), eq(variables['build.sourceBranch'], 'refs/heads/master'))
   jobs:
