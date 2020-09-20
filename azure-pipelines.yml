@@ -15,7 +15,8 @@ variables:
   buildConfiguration: 'Release'
   sqlDwPath: 'synapse'
   azure.subscription.endpoint: 'DTS-SHAREDSERVICES-TEST'
-
+  keyvault.name: 'mi-vault-test'
+  sqlDwDatabaseName: 'mi-datawarehouse-db-test'
 stages:
 - stage: 'validate'
   displayName: 'Validate project'
@@ -62,6 +63,11 @@ stages:
       runOnce:
         deploy:
           steps:
+          - template: ./pipeline/vault-secrets.yaml
+            parameters: 
+              azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+              keyVaultName: $(keyvault.name)
+              secretsFilter: '*'
           - task: DownloadBuildArtifacts@0
             inputs:
               downloadPath: $(System.ArtifactsDirectory)
@@ -76,8 +82,8 @@ stages:
               AuthenticationType: 'server'
               ServerName: $(sqlsrvrName).database.windows.net
               DatabaseName: $(sqlDwDatabaseName)
-              SqlUsername: '$(sqlsrvrUsername)'
-              SqlPassword: '$(sqlsrvrPassword)'
+              SqlUsername: '$(mi-datawarehouse-server-admin-user)'
+              SqlPassword: '$(mi-datawarehouse-server-admin-password)'
               deployType: 'DacpacTask'
               DacpacFile: '$(System.ArtifactsDirectory)\sql_dw_dacpac\synapse.dacpac' 
               AdditionalArguments: '/Variables:SqlDwDatabaseName=$(sqlDwDatabaseName) /Variables:PipelinePassword=$(pipelinePassword)'
