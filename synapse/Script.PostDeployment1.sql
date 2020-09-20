@@ -12,6 +12,9 @@ Post-Deployment Script Template
 
 :setvar PipelinePassword PipelinePassword
 
+
+SELECT * from sys.databases
+ 
 -- use master
 -- go
 -- ALTER LOGIN pipeline WITH PASSWORD = '$(PipelinePassword)'

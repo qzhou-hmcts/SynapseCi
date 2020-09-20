@@ -1,5 +1,5 @@
 ﻿/*
-Post-Deployment Script Template							
+Pre-Deployment Script Template							
 --------------------------------------------------------------------------------------
  This file contains SQL statements that will be appended to the build script.		
  Use SQLCMD syntax to include a file in the pre-deployment script.			
@@ -11,4 +11,6 @@ Post-Deployment Script Template
 */
 
 :setvar PipelinePassword PipelinePassword
-:setvar SqlDwDatabaseName SqlDwDatabaseName
+:setvar DbName SqlDwDatabaseName
+
+SELECT * from sys.databases
