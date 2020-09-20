@@ -39,11 +39,11 @@ jobs:
             inputs:
               azureSubscription: ${{ parameters.subscriptionEndpoint }}
               AuthenticationType: 'server'
-              ServerName: $ {{parameters.databaseServerName }}.database.windows.net
-              DatabaseName: $(sqlDwDatabaseName)
+              ServerName: ${{parameters.databaseServerName }}.database.windows.net
+              DatabaseName: ${{ parameters.databaseName }}
               SqlUsername: '$(mi-datawarehouse-server-admin-user)'
               SqlPassword: '$(mi-datawarehouse-server-admin-password)'
               deployType: 'DacpacTask'
               DacpacFile: '$(System.ArtifactsDirectory)\sql_dw_dacpac\$(sqlProjName).dacpac' 
-              AdditionalArguments: '/Variables:SqlDwDatabaseName=$(sqlDwDatabaseName) /Variables:PipelinePassword=$(pipelinePassword)'
+              AdditionalArguments: '/Variables:SqlDwDatabaseName=${{ parameters.databaseName }} /Variables:PipelinePassword=$(pipelinePassword)'
             displayName: 'Azure SQL Dacpac'
