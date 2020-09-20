@@ -110,6 +110,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
@@ -124,6 +125,8 @@
     <Folder Include="Security\" />
     <Folder Include="Security\users" />
     <Folder Include="External Resources\" />
+    <Folder Include="PROBATE\" />
+    <Folder Include="PROBATE\Tables\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\MasterKey1.sql" />
@@ -132,6 +135,8 @@
     <Build Include="Security\notify.sql" />
     <Build Include="External Resources\uncompressedcsv.sql" />
     <Build Include="External Resources\csvwithheader.sql" />
+    <Build Include="PROBATE\Tables\STG_CCD_METADATA.sql" />
+    <Build Include="Security\PROBATE.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="PipelinePassword">
@@ -146,5 +151,12 @@
   <ItemGroup>
     <PreDeploy Include="Script.PreDeployment.sql" />
     <PostDeploy Include="Script.PostDeployment1.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureDw\SqlSchemas\master.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureDw\SqlSchemas\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
   </ItemGroup>
 </Project>
