@@ -54,41 +54,13 @@ stages:
   displayName: 'Deploy project'
   condition: succeeded('build')
   jobs:
-  - deployment: deploy_azuresqldw
-    displayName: 'Deploy to AzureSQLDW'
-    pool:
-      vmImage: 'windows-latest'
-    variables:
-      sqlProjName: ddo_azuresqldw_dw
-    environment: $(environment)
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - template: ./pipeline/vault-secrets.yaml
-            parameters: 
-              azureSubscriptionEndpoint: $(azure.subscription.endpoint)
-              keyVaultName: $(keyvault.name)
-              secretsFilter: '*'
-          - task: DownloadBuildArtifacts@0
-            inputs:
-              downloadPath: $(System.ArtifactsDirectory)
-              artifactName: 'sql_dw_dacpac'
-          - task: CmdLine@2
-            inputs:
-              script: 'dir /s $(System.ArtifactsDirectory)' 
-          # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/sql-azure-dacpac-deployment?view=azure-devops
-          - task: SqlAzureDacpacDeployment@1
-            inputs:
-              azureSubscription: $(azure.subscription.endpoint)
-              AuthenticationType: 'server'
-              ServerName: $(sqlsrvrName).database.windows.net
-              DatabaseName: $(sqlDwDatabaseName)
-              SqlUsername: '$(mi-datawarehouse-server-admin-user)'
-              SqlPassword: '$(mi-datawarehouse-server-admin-password)'
-              deployType: 'DacpacTask'
-              DacpacFile: '$(System.ArtifactsDirectory)\sql_dw_dacpac\synapse.dacpac' 
-              AdditionalArguments: '/Variables:SqlDwDatabaseName=$(sqlDwDatabaseName) /Variables:PipelinePassword=$(pipelinePassword)'
-            displayName: 'Azure SQL Dacpac'
+  - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
+    parameters:
+      environment: $(environment)
+      subscriptionEndpoint: $(azure.subscription.endpoint)
+      databaseServerName: $(sqlsrvrName)
+      databaseName: $(sqlDwDatabaseName)
+      projectName: 'synapse'
+      artifactName: 'sql_dw_dacpac'
 
  
