@@ -50,6 +50,9 @@ stages:
         ArtifactName: 'sql_dw_dacpac'
       displayName: 'Publish SQL DACPAC'  
   
+- stage: 'Deploy'
+  displayName: 'Deploy project'
+  jobs:
   - deployment: deploy_azuresqldw
     displayName: 'Deploy to AzureSQLDW'
     dependsOn: validate_sql_packages
