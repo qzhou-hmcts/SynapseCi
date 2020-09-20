@@ -18,7 +18,7 @@ variables:
   keyvault.name: 'mi-vault-test'
   sqlDwDatabaseName: 'mi-datawarehouse-db-test'
 stages:
-- stage: 'validate'
+- stage: 'build'
   displayName: 'Validate project'
   # condition: and(always(), eq(variables['Build.Reason'], 'PullRequest'))
   jobs:
@@ -52,11 +52,10 @@ stages:
   
 - stage: 'Deploy'
   displayName: 'Deploy project'
+  condition: succeeded('build')
   jobs:
   - deployment: deploy_azuresqldw
     displayName: 'Deploy to AzureSQLDW'
-    dependsOn: validate_sql_packages
-    condition: succeeded()
     pool:
       vmImage: 'windows-latest'
     variables:
