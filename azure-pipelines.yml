@@ -51,7 +51,7 @@ stages:
   
 - stage: 'Deploy'
   displayName: 'Deploy project'
-  condition: succeeded('build')
+  condition: and(succeeded('build'), ne(variables['build.sourceBranch'], 'refs/heads/master'))
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
@@ -61,5 +61,34 @@ stages:
       databaseName: 'mi-datawarehouse-db-test'
       projectName: 'synapse'
       artifactName: 'sql_dw_dacpac'
+      keyvaultName: 'mi-vault-test'
+
+- stage: 'DeployStaging'
+  displayName: 'Deploy project on staging env'
+  condition: and(succeeded('build'), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  jobs:
+  - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
+    parameters:
+      environment: 'stg'
+      subscriptionEndpoint: DTS-SHAREDSERVICES-STG
+      databaseServerName: $(sqlsrvrName)
+      databaseName: 'mi-datawarehouse-db-stg'
+      projectName: 'synapse'
+      artifactName: 'sql_dw_dacpac'
+      keyvaultName: 'mi-vault-stg'
+
+- stage: 'Deploy Prod'
+  displayName: 'Deploy production'
+  condition: and(succeeded('DeployStaging'), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  jobs:
+  - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
+    parameters:
+      environment: 'prod'
+      subscriptionEndpoint: DTS-SHAREDSERVICES-STG
+      databaseServerName: $(sqlsrvrName)
+      databaseName: 'mi-datawarehouse-db-prod'
+      projectName: 'synapse'
+      artifactName: 'sql_dw_dacpac'
+      keyvaultName: 'mi-vault-prod'
 
  

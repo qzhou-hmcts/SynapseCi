@@ -11,6 +11,8 @@ parameters:
   type: string
 - name: subscriptionEndpoint
   type: string
+- name: keyvaultName
+  type: string
 
 jobs:
   - deployment: deploy_azuresqldw
@@ -28,13 +30,25 @@ jobs:
           - template: ../tasks/vault-secrets.yaml
             parameters: 
               azureSubscriptionEndpoint: $(azure.subscription.endpoint)
-              keyVaultName: $(keyvault.name)
+              keyVaultName: ${{ parameters.keyvaultName }}
               azureSecreKeys: '*'
           - task: DownloadBuildArtifacts@0
             inputs:
               downloadPath: $(System.ArtifactsDirectory)
               artifactName: ${{ parameters.artifactName }} #'sql_dw_dacpac'
           # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/sql-azure-dacpac-deployment?view=azure-devops
+          - task: SqlAzureDacpacDeployment@1
+            inputs:
+              azureSubscription: ${{ parameters.subscriptionEndpoint }}
+              AuthenticationType: 'server'
+              ServerName: ${{parameters.databaseServerName }}.database.windows.net
+              DatabaseName: ${{ parameters.databaseName }}
+              SqlUsername: '$(mi-datawarehouse-server-admin-user)'
+              SqlPassword: '$(mi-datawarehouse-server-admin-password)'
+              deployType: 'DacpacTask'
+              DeploymentAction: 'Extract'
+              AdditionalArguments: '/Variables:SqlDwDatabaseName=${{ parameters.databaseName }} /Variables:PipelinePassword=$(pipelinePassword)'
+            displayName: 'Azure SQL Dacpac backup'
           - task: SqlAzureDacpacDeployment@1
             inputs:
               azureSubscription: ${{ parameters.subscriptionEndpoint }}
