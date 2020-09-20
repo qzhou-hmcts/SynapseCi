@@ -26,5 +26,5 @@ IF NOT EXISTS
         CREATE LOGIN pipeline WITH PASSWORD = '$(PipelinePassword)'
     END
 
-use '$(SqlDwDatabaseName)'
+use $(SqlDwDatabaseName)
 go
