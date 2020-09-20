@@ -135,7 +135,6 @@
     <Build Include="Security\notify.sql" />
     <Build Include="External Resources\uncompressedcsv.sql" />
     <Build Include="External Resources\csvwithheader.sql" />
-    <Build Include="PROBATE\Tables\STG_CCD_METADATA.sql" />
     <Build Include="Security\PROBATE.sql" />
   </ItemGroup>
   <ItemGroup>
