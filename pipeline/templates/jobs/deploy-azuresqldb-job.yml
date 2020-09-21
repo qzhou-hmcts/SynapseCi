@@ -17,6 +17,7 @@ parameters:
 jobs:
   - deployment: deploy_azuresqldw
     displayName: 'Deploy to AzureSQLDW'
+    condition: never()
     pool:
       vmImage: 'windows-latest'
     variables:
