@@ -44,7 +44,7 @@ jobs:
   - script: make test
     workingDirectory: $(pythonWorkingDir)
     env:
-      SQL_SERVER_NAME: ${{parameters.databaseServerName }}.database.windows.net
+      SQL_SERVER_NAME: ${{parameters.databaseServerName }}
       SQL_SERVER_USERNAME: '$(mi-datawarehouse-server-admin-user)'
       SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)'
       SQL_DATABASE_NAME: ${{ parameters.databaseName }}
@@ -53,8 +53,8 @@ jobs:
   - script: make coverage
     workingDirectory: $(pythonWorkingDir)
     env:
-      SQL_SERVER_NAME: ${{parameters.databaseServerName }}.database.windows.net
+      SQL_SERVER_NAME: ${{parameters.databaseServerName }}
       SQL_SERVER_USERNAME: '$(mi-datawarehouse-server-admin-user)'
       SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)'
       SQL_DATABASE_NAME: ${{ parameters.databaseName }}
-    displayName: 'Run integration tests'
+    displayName: 'Run test coverage'
