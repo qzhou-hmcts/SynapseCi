@@ -62,6 +62,13 @@ stages:
       projectName: 'synapse'
       artifactName: 'sql_dw_dacpac'
       keyvaultName: 'mi-vault-test'
+  - template: pipeline/templates/jobs/integration-tests-job.yml
+    parameters:
+      subscriptionEndpoint: $(azure.subscription.endpoint)
+      databaseServerName: $(sqlsrvrName)
+      databaseName: 'mi-datawarehouse-db-test'
+      projectName: 'synapse'
+      keyvaultName: 'mi-vault-test'
 
 - stage: 'DeployStaging'
   displayName: 'Deploy project on staging env'

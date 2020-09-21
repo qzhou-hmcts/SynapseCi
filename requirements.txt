@@ -1,0 +1,8 @@
+pytest
+pytest-runner
+pyodbc
+azure-mgmt-datafactory
+pytest-adf
+python-dotenv
+flake8
+coverage
