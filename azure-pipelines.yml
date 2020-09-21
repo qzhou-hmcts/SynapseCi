@@ -67,7 +67,6 @@ stages:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       databaseServerName: $(sqlsrvrName)
       databaseName: 'mi-datawarehouse-db-test'
-      projectName: 'synapse'
       keyvaultName: 'mi-vault-test'
 
 - stage: 'DeployStaging'
