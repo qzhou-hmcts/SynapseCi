@@ -7,42 +7,94 @@ trigger:
 - master
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'Ubuntu-16.04'
 
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  sqlDwPath: 'synapse'
+  azure.subscription.endpoint: 'DTS-SHAREDSERVICES-TEST'
+  keyvault.name: 'mi-vault-test'
+stages:
+- stage: 'build'
+  displayName: 'Validate project'
+  # condition: and(always(), eq(variables['Build.Reason'], 'PullRequest'))
+  jobs:
+  - job: 'validate_sql_packages'
+    displayName: 'Validate sql project'
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: NuGetToolInstaller@1
 
-steps:
-- task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+    - task: VSBuild@1
+      inputs:
+        solution: '$(solution)'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    - task: VSTest@2
+      inputs:
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(sqlDwPath)/bin/$(buildConfiguration)/synapse.dacpac'
+        ArtifactName: 'sql_dw_dacpac'
+      displayName: 'Publish SQL DACPAC'  
+  
+- stage: 'Deploy'
+  displayName: 'Deploy project'
+  condition: and(succeeded('build'), ne(variables['build.sourceBranch'], 'refs/heads/master'))
+  jobs:
+  - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
+    parameters:
+      environment: $(environment)
+      subscriptionEndpoint: $(azure.subscription.endpoint)
+      databaseServerName: $(sqlsrvrName)
+      databaseName: 'mi-datawarehouse-db-test'
+      projectName: 'synapse'
+      artifactName: 'sql_dw_dacpac'
+      keyvaultName: 'mi-vault-test'
+  - template: pipeline/templates/jobs/integration-tests-job.yml
+    parameters:
+      subscriptionEndpoint: $(azure.subscription.endpoint)
+      databaseServerName: $(sqlsrvrName)
+      databaseName: 'mi-datawarehouse-db-test'
+      keyvaultName: 'mi-vault-test'
 
-# - task: SqlAzureDacpacDeployment@1
-#   inputs:
-#     AuthenticationType: 'server'
-#     ServerName: 'mi-datawarehouse-server-sbox'
-#     DatabaseName: 'datawarehouse-db-sbox'
-#     SqlUsername: 'login_user'
-#     SqlPassword: 'login_password'
-#     deployType: 'DacpacTask'
-#     DeploymentAction: 'Script'
-#     DacpacFile: 'temporal.dacpac'
-#     IpDetectionMethod: 'AutoDetect'
-- task: VSBuild@1
-  inputs:
-    solution: '**\*.sln'
+- stage: 'DeployStaging'
+  displayName: 'Deploy project on staging env'
+  condition: and(succeeded('build'), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  jobs:
+  - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
+    parameters:
+      environment: 'stg'
+      subscriptionEndpoint: DTS-SHAREDSERVICES-STG
+      databaseServerName: $(sqlsrvrName)
+      databaseName: 'mi-datawarehouse-db-stg'
+      projectName: 'synapse'
+      artifactName: 'sql_dw_dacpac'
+      keyvaultName: 'mi-vault-stg'
+
+- stage: 'DeployProd'
+  displayName: 'Deploy production'
+  condition: and(succeeded('DeployStaging'), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  jobs:
+  - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
+    parameters:
+      environment: 'prod'
+      subscriptionEndpoint: DTS-SHAREDSERVICES-STG
+      databaseServerName: $(sqlsrvrName)
+      databaseName: 'mi-datawarehouse-db-prod'
+      projectName: 'synapse'
+      artifactName: 'sql_dw_dacpac'
+      keyvaultName: 'mi-vault-prod'
+
+ 

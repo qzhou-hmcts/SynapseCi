@@ -1,0 +1,63 @@
+parameters:
+- name: environment
+  type: string
+- name: artifactName
+  type: string
+- name: projectName
+  type: string
+- name: databaseName
+  type: string
+- name: databaseServerName
+  type: string
+- name: subscriptionEndpoint
+  type: string
+- name: keyvaultName
+  type: string
+
+jobs:
+  - deployment: deploy_azuresqldw
+    displayName: 'Deploy to AzureSQLDW'
+    condition: eq(variables['build.sourceBranch'], 'refs/heads/master')  #disable job for testing
+    pool:
+      vmImage: 'windows-latest'
+    variables:
+      sqlProjName: ${{ parameters.projectName }}
+      sqlDwDatabaseName: ${{ parameters.databaseName }}
+    environment: ${{ parameters.environment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: ../tasks/vault-secrets.yaml
+            parameters: 
+              azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+              keyVaultName: ${{ parameters.keyvaultName }}
+              azureSecreKeys: '*'
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              downloadPath: $(System.ArtifactsDirectory)
+              artifactName: ${{ parameters.artifactName }} #'sql_dw_dacpac'
+          # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/sql-azure-dacpac-deployment?view=azure-devops
+          - task: SqlAzureDacpacDeployment@1
+            inputs:
+              azureSubscription: ${{ parameters.subscriptionEndpoint }}
+              AuthenticationType: 'server'
+              ServerName: ${{parameters.databaseServerName }}.database.windows.net
+              DatabaseName: ${{ parameters.databaseName }}
+              SqlUsername: '$(mi-datawarehouse-server-admin-user)'
+              SqlPassword: '$(mi-datawarehouse-server-admin-password)'
+              deployType: 'DacpacTask'
+              DeploymentAction: 'Extract'
+            displayName: 'Azure SQL Dacpac backup'
+          - task: SqlAzureDacpacDeployment@1
+            inputs:
+              azureSubscription: ${{ parameters.subscriptionEndpoint }}
+              AuthenticationType: 'server'
+              ServerName: ${{parameters.databaseServerName }}.database.windows.net
+              DatabaseName: ${{ parameters.databaseName }}
+              SqlUsername: '$(mi-datawarehouse-server-admin-user)'
+              SqlPassword: '$(mi-datawarehouse-server-admin-password)'
+              deployType: 'DacpacTask'
+              DacpacFile: '$(System.ArtifactsDirectory)\sql_dw_dacpac\$(sqlProjName).dacpac' 
+              AdditionalArguments: '/Variables:SqlDwDatabaseName=${{ parameters.databaseName }} /Variables:PipelinePassword=$(pipelinePassword)'
+            displayName: 'Azure SQL Dacpac'

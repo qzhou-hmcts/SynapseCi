@@ -1,0 +1,60 @@
+parameters:
+- name: databaseName
+  type: string
+- name: databaseServerName
+  type: string
+- name: subscriptionEndpoint
+  type: string
+- name: keyvaultName
+  type: string
+
+
+
+jobs:
+- job: run_integration_tests
+  displayName: 'Run integration tests'
+  pool:
+    vmImage: 'ubuntu-latest'
+  variables:
+    pythonWorkingDir: './'
+    pythonVersion: 3.6
+  steps:
+  - script: |
+      curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+      sudo bash -c "curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list"
+      sudo apt-get update
+      sudo ACCEPT_EULA=Y apt-get -y install msodbcsql17 unixodbc-dev
+    displayName: 'Install msodbc'
+  - template: ../tasks/vault-secrets.yaml
+    parameters: 
+      azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+      keyVaultName: ${{ parameters.keyvaultName }}
+      azureSecreKeys: '*'
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(pythonVersion)'
+      addToPath: true
+      architecture: 'x64'
+    displayName: 'Use Python Version: $(pythonVersion)'
+
+  - script: pip install -r requirements.txt
+    workingDirectory: $(pythonWorkingDir)
+    displayName: 'Install requirements'
+
+  - script: make test
+    workingDirectory: $(pythonWorkingDir)
+    env:
+      SQL_SERVER_NAME: ${{parameters.databaseServerName }}
+      SQL_SERVER_USERNAME: '$(mi-datawarehouse-server-admin-user)'
+      SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)'
+      SQL_DATABASE_NAME: ${{ parameters.databaseName }}
+    displayName: 'Run integration tests'
+
+  - script: make coverage
+    workingDirectory: $(pythonWorkingDir)
+    env:
+      SQL_SERVER_NAME: ${{parameters.databaseServerName }}
+      SQL_SERVER_USERNAME: '$(mi-datawarehouse-server-admin-user)'
+      SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)'
+      SQL_DATABASE_NAME: ${{ parameters.databaseName }}
+    displayName: 'Run test coverage'
