@@ -7,12 +7,15 @@ parameters:
   type: string
 - name: keyvaultName
   type: string
+- name: adfName
+  type: string
 
 
 
 jobs:
 - job: run_integration_tests
   displayName: 'Run integration tests'
+  dependsOn: deploy_adf
   pool:
     vmImage: 'ubuntu-latest'
   variables:
@@ -48,6 +51,12 @@ jobs:
       SQL_SERVER_USERNAME: '$(mi-datawarehouse-server-admin-user)'
       SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)'
       SQL_DATABASE_NAME: ${{ parameters.databaseName }}
+      AZ_SERVICE_PRINCIPAL_ID: $(AZ_SERVICE_PRINCIPAL_ID)
+      AZ_SERVICE_PRINCIPAL_SECRET: $(AZ_SERVICE_PRINCIPAL_SECRET)
+      AZ_SERVICE_PRINCIPAL_TENANT_ID: $(AZ_SERVICE_PRINCIPAL_TENANT_ID)
+      AZ_SUBSCRIPTION_ID: $(AZ_SUBSCRIPTION_ID)
+      AZ_RESOURCE_GROUP_NAME: $(rgName)
+      AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
     displayName: 'Run integration tests'
 
   - script: make coverage
@@ -57,4 +66,10 @@ jobs:
       SQL_SERVER_USERNAME: '$(mi-datawarehouse-server-admin-user)'
       SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)'
       SQL_DATABASE_NAME: ${{ parameters.databaseName }}
+      AZ_SERVICE_PRINCIPAL_ID: $(AZ_SERVICE_PRINCIPAL_ID)
+      AZ_SERVICE_PRINCIPAL_SECRET: $(AZ_SERVICE_PRINCIPAL_SECRET)
+      AZ_SERVICE_PRINCIPAL_TENANT_ID: $(AZ_SERVICE_PRINCIPAL_TENANT_ID)
+      AZ_SUBSCRIPTION_ID: $(AZ_SUBSCRIPTION_ID)
+      AZ_RESOURCE_GROUP_NAME: $(rgName)
+      AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
     displayName: 'Run test coverage'
