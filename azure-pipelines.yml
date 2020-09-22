@@ -72,6 +72,10 @@ stages:
       projectName: 'synapse'
       artifactName: 'sql_dw_dacpac'
       keyvaultName: 'mi-vault-test'
+  - template: pipeline/templates/jobs/deploy-adf-job.yml
+    parameters:
+      environment: $(environment)
+      subscriptionEndpoint: $(azure.subscription.endpoint)
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
