@@ -7,6 +7,8 @@ parameters:
   type: string
 - name: keyvaultName
   type: string
+- name: ssKeyvaultName
+  type: string
 - name: adfName
   type: string
 
@@ -33,6 +35,11 @@ jobs:
       azureSubscriptionEndpoint: $(azure.subscription.endpoint)
       keyVaultName: ${{ parameters.keyvaultName }}
       azureSecreKeys: '*'
+  - template: ../tasks/vault-secrets.yaml
+      parameters:
+        azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+        keyVaultName: ${{ parameters.ssKeyvaultName }}
+        azureSecreKeys: '*'
   - task: UsePythonVersion@0
     inputs:
       versionSpec: '$(pythonVersion)'
@@ -51,10 +58,10 @@ jobs:
       SQL_SERVER_USERNAME: '$(mi-datawarehouse-server-admin-user)'
       SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)'
       SQL_DATABASE_NAME: ${{ parameters.databaseName }}
-      AZ_SERVICE_PRINCIPAL_ID: $(AZ_SERVICE_PRINCIPAL_ID)
-      AZ_SERVICE_PRINCIPAL_SECRET: $(AZ_SERVICE_PRINCIPAL_SECRET)
-      AZ_SERVICE_PRINCIPAL_TENANT_ID: $(AZ_SERVICE_PRINCIPAL_TENANT_ID)
-      AZ_SUBSCRIPTION_ID: $(AZ_SUBSCRIPTION_ID)
+      AZ_SERVICE_PRINCIPAL_ID: '$(sp-client-id)'
+      AZ_SERVICE_PRINCIPAL_SECRET: '$(sp-client-secret)'
+      AZ_SERVICE_PRINCIPAL_TENANT_ID: '$(sp-tenant-id)'
+      AZ_SUBSCRIPTION_ID: '$(sp-subscription-id)'
       AZ_RESOURCE_GROUP_NAME: $(rgName)
       AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
     displayName: 'Run integration tests'
