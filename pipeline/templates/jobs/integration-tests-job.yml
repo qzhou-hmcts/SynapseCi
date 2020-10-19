@@ -36,10 +36,10 @@ jobs:
       keyVaultName: ${{ parameters.keyvaultName }}
       azureSecreKeys: '*'
   - template: ../tasks/vault-secrets.yaml
-      parameters:
-        azureSubscriptionEndpoint: $(azure.subscription.endpoint)
-        keyVaultName: ${{ parameters.ssKeyvaultName }}
-        azureSecreKeys: '*'
+    parameters:
+      azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+      keyVaultName: ${{ parameters.ssKeyvaultName }}
+      azureSecreKeys: '*'
   - task: UsePythonVersion@0
     inputs:
       versionSpec: '$(pythonVersion)'
