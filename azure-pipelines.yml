@@ -72,7 +72,6 @@ stages:
       projectName: 'synapse'
       artifactName: 'sql_dw_dacpac'
       keyvaultName: 'mi-vault-test'
-      ssKeyvaultName: 'ss-vault-test'
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
       environment: $(environment)
