@@ -17,6 +17,7 @@ jobs:
     runOnce:
       deploy:
         steps:
+        - checkout: self
         - checkout: mi_synapse_integration
           path: 'adf_publish'
 
