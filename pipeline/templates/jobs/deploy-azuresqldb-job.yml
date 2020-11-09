@@ -28,6 +28,13 @@ jobs:
       runOnce:
         deploy:
           steps:
+          - checkout: self
+            path: 'self'
+          - task: Bash@3
+            displayName: 'List directory'
+            inputs:
+              targetType: inline
+              script: 'ls -lR'
           - template: ../tasks/vault-secrets.yaml
             parameters: 
               azureSubscriptionEndpoint: $(azure.subscription.endpoint)
@@ -39,15 +46,17 @@ jobs:
               artifactName: ${{ parameters.artifactName }} #'sql_dw_dacpac'
 
           - task: Bash@3
+            displayName: 'Azure SQL Dacpac backup'
             inputs:
               targetType: filePath
-              filePath: '_scripts/deploySqlPackage.sh'
+              filePath: '$(Pipeline.Workspace)/self/_scripts/deploySqlPackage.sh'
             env:
               ServerName: ${{parameters.databaseServerName }}.database.windows.net
               DatabaseName: ${{ parameters.databaseName }}
               SqlUsername: '$(mi-datawarehouse-server-admin-user)'
               SqlPassword: '$(mi-datawarehouse-server-admin-password)'
               DeploymentAction: 'Extract'
+
           # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/sql-azure-dacpac-deployment?view=azure-devops
           # - task: SqlAzureDacpacDeployment@1
           #   inputs:
