@@ -20,16 +20,18 @@ jobs:
         - checkout: mi_synapse_integration
           path: 'adf_publish'
 
-        # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-powershell
+          # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-resource-group-deployment
         - task: CmdLine@2
           inputs:
-            script: 'pwsh -File $(Pipeline.Workspace)/adf_publish/$(devAdfName)/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true'
+            script: 'dir /s $(Pipeline.Workspace)'
+
+          # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-powershell
+        - task: CmdLine@2
+          inputs:
+            script: 'pwsh -File $(Pipeline.Workspace)/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true'
           displayName: 'Azure PowerShell script: Stop ADF triggers'
 
-        # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-resource-group-deployment
-        - task: CmdLine@2
-          inputs:
-            script: 'dir /s $(Pipeline.Workspace)' 
+
         - task: AzureResourceGroupDeployment@2
           displayName: 'Azure Deployment:Create Or Update Resource Group action on $(rgName)'
           inputs:
@@ -44,5 +46,5 @@ jobs:
         - task: CmdLine@2
           displayName: 'Azure PowerShell script: Start ADF triggers'
           inputs:
-            script: 'pwsh -File $(Pipeline.Workspace)/adf_publish/$(devAdfName)/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false'
-            
+            script: 'pwsh -File $(Pipeline.Workspace)/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false'
+
