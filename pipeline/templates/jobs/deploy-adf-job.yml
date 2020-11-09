@@ -23,7 +23,7 @@ jobs:
         # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-powershell
         - task: CmdLine@2
           inputs:
-            script: 'pwsh -File $(Pipeline.Workspace)\adf_publish\$(devAdfName)\_scripts\deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)\adf_publish\$(devAdfName)\ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true'
+            script: 'pwsh -File $(Pipeline.Workspace)/adf_publish/$(devAdfName)/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true'
           displayName: 'Azure PowerShell script: Stop ADF triggers'
 
         # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-resource-group-deployment
@@ -41,10 +41,8 @@ jobs:
             overrideParameters: -factoryName "$(adfName)" -AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://$(persistentStorage).blob.core.windows.net"
 
         # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-powershell
-        - task: AzurePowerShell@4
+        - task: CmdLine@2
           displayName: 'Azure PowerShell script: Start ADF triggers'
           inputs:
-            azureSubscription: ${{ parameters.subscriptionEndpoint }}
-            ScriptPath: '$(Pipeline.Workspace)\adf_publish\$(devAdfName)\_scripts\deploymentadf.ps1'
-            ScriptArguments: '-armTemplate "$(Pipeline.Workspace)\adf_publish\$(devAdfName)\ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false'
-            azurePowerShellVersion: LatestVersion
+            script: 'pwsh -File $(Pipeline.Workspace)/adf_publish/$(devAdfName)/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false'
+            
