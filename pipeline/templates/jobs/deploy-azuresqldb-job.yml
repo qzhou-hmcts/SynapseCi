@@ -39,8 +39,9 @@ jobs:
               artifactName: ${{ parameters.artifactName }} #'sql_dw_dacpac'
 
           - task: Bash@3
-            targetType: filePath
-            filePath: '_scripts/deploySqlPackage.sh'
+            inputs:
+              targetType: filePath
+              filePath: '_scripts/deploySqlPackage.sh'
             env:
               ServerName: ${{parameters.databaseServerName }}.database.windows.net
               DatabaseName: ${{ parameters.databaseName }}
