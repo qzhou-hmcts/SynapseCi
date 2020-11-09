@@ -11,6 +11,8 @@ param
 $templateJson = Get-Content $armTemplate | ConvertFrom-Json
 $resources = $templateJson.resources
 
+Install-Module -Name Az.DataFactory -RequiredVersion 1.0.0 -AllowClobber -Force
+
 #Triggers 
 Write-Host "Getting triggers"
 $triggersADF = Get-AzDataFactoryV2Trigger -DataFactoryName $DataFactoryName -ResourceGroupName $ResourceGroupName
