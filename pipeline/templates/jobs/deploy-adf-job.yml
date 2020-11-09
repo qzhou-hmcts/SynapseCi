@@ -23,7 +23,7 @@ jobs:
           # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-resource-group-deployment
         - task: CmdLine@2
           inputs:
-            script: 'dir /s $(Pipeline.Workspace)'
+            script: 'dir $(Pipeline.Workspace)'
 
           # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-powershell
         - task: CmdLine@2
