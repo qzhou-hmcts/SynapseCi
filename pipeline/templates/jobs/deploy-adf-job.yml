@@ -8,8 +8,8 @@ jobs:
 - deployment: deploy_adf
   # dependsOn: deploy_azuresqldw
   displayName: 'Deploy to Azure Data Factory'
-  pool:
-    vmImage: 'windows-2019'
+  pool: hmcts-ss-sandbox
+
   variables:
     packageWheelName: 'none'
   environment: ${{ parameters.environment }}

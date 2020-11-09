@@ -18,8 +18,8 @@ jobs:
   - deployment: deploy_azuresqldw
     displayName: 'Deploy to AzureSQLDW'
     condition: eq(variables['build.sourceBranch'], 'refs/heads/master')  #disable job for testing
-    pool:
-      vmImage: 'windows-latest'
+    pool: hmcts-ss-sandbox
+
     variables:
       sqlProjName: ${{ parameters.projectName }}
       sqlDwDatabaseName: ${{ parameters.databaseName }}
