@@ -30,7 +30,7 @@ jobs:
           # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-powershell
         - task: CmdLine@2
           inputs:
-            script: 'pwsh -File $(Pipeline.Workspace)/s/SynapseCi/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true'
+            script: 'pwsh -File $(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true'
           displayName: 'Azure PowerShell script: Stop ADF triggers'
 
 
