@@ -4,8 +4,8 @@ param
     [parameter(Mandatory = $false)] [String] $armTemplate,
     [parameter(Mandatory = $false)] [String] $ResourceGroupName,
     [parameter(Mandatory = $false)] [String] $DataFactoryName,
-    [parameter(Mandatory = $false)] [switch] $predeployment=$true,
-    [parameter(Mandatory = $false)] [switch] $deleteDeployment=$false
+    [parameter(Mandatory = $false)] [Bool] $predeployment=$true,
+    [parameter(Mandatory = $false)] [Bool] $deleteDeployment=$false
 )
 
 $templateJson = Get-Content $armTemplate | ConvertFrom-Json
