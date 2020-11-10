@@ -39,7 +39,7 @@ jobs:
               az datafactory trigger  list --factory-name $(adfName)  --resource-group '$(rgName)' --subscription ${{ parameters.subscriptionEndpoint }}
         # - task: CmdLine@2
         #   inputs:
-        #     script: 'pwsh -File $(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true'
+        #     script: 'pwsh -File $(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true -deleteDeployment $false'
         #   displayName: 'Azure PowerShell script: Stop ADF triggers'
 
 
@@ -61,8 +61,8 @@ jobs:
             scriptType: pscore
             scriptLocation: scriptPath
             scriptPath: $(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1
-            arguments: -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false'
+            arguments: -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false -deleteDeployment $false'
             
             # inlineScript: |
-            # script: 'pwsh -File $(Pipeline.Workspace)/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false'
+            # script: 'pwsh -File $(Pipeline.Workspace)/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false -deleteDeployment $false'
 
