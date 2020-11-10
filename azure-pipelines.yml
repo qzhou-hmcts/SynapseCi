@@ -25,8 +25,8 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   sqlDwPath: 'synapse'
-  azure.subscription.endpoint: 'DTS-SHAREDSERVICES-TEST'
-  keyvault.name: 'mi-vault-test'
+  azure.subscription.endpoint: 'DTS-SHAREDSERVICES-SBOX'
+  keyvault.name: 'mi-vault-sbox'
 stages:
 - stage: 'build'
   displayName: 'Validate project'
@@ -67,8 +67,8 @@ stages:
     parameters:
       environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      databaseServerName: $(sqlsrvrName)
-      databaseName: 'mi-datawarehouse-db-test'
+      databaseServerName: 'mi-datawarehouse-server-sbox'
+      databaseName: 'mi-datawarehouse-db-sbox'
       projectName: 'synapse'
       artifactName: 'sql_dw_dacpac'
       keyvaultName: 'mi-vault-test'
@@ -79,11 +79,11 @@ stages:
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      databaseServerName: $(sqlsrvrName)
-      databaseName: 'mi-datawarehouse-db-test'
-      keyvaultName: 'mi-vault-test'
-      ssKeyvaultName: 'ss-vault-test'
-      adfName: 'mi-ccd-datafactory-test'
+      databaseServerName: 'mi-datawarehouse-server-box'
+      databaseName: 'mi-datawarehouse-db-sbox'
+      keyvaultName: 'mi-vaultxbox'
+      ssKeyvaultName: 'ss-vault-sbox'
+      adfName: 'mi-ccd-datafactory-sbox'
 
 - stage: 'DeployStaging'
   displayName: 'Deploy project on staging env'
