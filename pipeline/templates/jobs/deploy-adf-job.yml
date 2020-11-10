@@ -25,6 +25,14 @@ jobs:
         - task: CmdLine@2
           inputs:
             script: 'dir $(Pipeline.Workspace)'
+        - task: AzurePowerShell@4
+          inputs:
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            ScriptPath: '$(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1'
+            ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true'
+            azurePowerShellVersion: LatestVersion
+          displayName: 'Azure PowerShell script: Stop ADF triggers'
+
         - task: AzureCLI@2
           displayName: 'Azure script: Stop ADF triggers'
           inputs:
