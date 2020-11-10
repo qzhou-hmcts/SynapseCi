@@ -17,7 +17,7 @@ parameters:
 jobs:
   - deployment: deploy_azuresqldw
     displayName: 'Deploy to AzureSQLDW'
-    # condition: eq(variables['build.sourceBranch'], 'refs/heads/master')  #disable job for testing
+    condition: eq(variables['build.sourceBranch'], 'refs/heads/master')  #disable job for testing
     pool: hmcts-ss-sandbox
 
     variables:

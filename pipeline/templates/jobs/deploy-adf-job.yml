@@ -26,6 +26,7 @@ jobs:
           inputs:
             script: 'dir $(Pipeline.Workspace)'
         - task: AzureCLI@2
+          displayName: 'Azure script: Stop ADF triggers'
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             scriptType: bash
@@ -36,7 +37,6 @@ jobs:
               az config set extension.use_dynamic_install=yes_without_prompt
               az extension add --upgrade -n datafactory
               az datafactory trigger  list --factory-name $(adfName)  --resource-group '$(rgName)' --subscription ${{ parameters.subscriptionEndpoint }}
-          displayName: 'Azure PowerShell script: Stop ADF triggers'
         # - task: CmdLine@2
         #   inputs:
         #     script: 'pwsh -File $(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true'
@@ -54,8 +54,15 @@ jobs:
             overrideParameters: -factoryName "$(adfName)" -AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://$(persistentStorage).blob.core.windows.net"
 
         # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-powershell
-        - task: CmdLine@2
-          displayName: 'Azure PowerShell script: Start ADF triggers'
+        - task: AzureCLI@2
+          displayName: 'Azure script: Start ADF triggers'
           inputs:
-            script: 'pwsh -File $(Pipeline.Workspace)/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false'
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            scriptType: pscore
+            scriptLocation: scriptPath
+            scriptPath: $(Pipeline.Workspace)/_scripts/deploymentadf.ps1
+            arguments: -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false'
+            
+            # inlineScript: |
+            # script: 'pwsh -File $(Pipeline.Workspace)/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false'
 
