@@ -71,7 +71,7 @@ stages:
       databaseName: 'mi-datawarehouse-db-sbox'
       projectName: 'synapse'
       artifactName: 'sql_dw_dacpac'
-      keyvaultName: 'mi-vault-test'
+      keyvaultName: 'mi-vault-sbox'
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
       environment: $(environment)
