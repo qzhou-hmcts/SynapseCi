@@ -22,16 +22,23 @@ jobs:
         - checkout: mi_synapse_integration
           path: 'adf_publish'
 
-          # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-resource-group-deployment
         - task: CmdLine@2
           inputs:
             script: 'dir $(Pipeline.Workspace)'
-
-          # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-powershell
-        - task: CmdLine@2
+        - task: AzureCLI@2
           inputs:
-            script: 'pwsh -File $(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true'
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            scriptType: bash
+            scriptLocation: inlineScript
+            inlineScript: |
+              az --version
+              az account show
+              az datafactory trigger  list --factory-name $(adfName)  --resource-group '$(rgName)' --subscription ${{ parameters.subscriptionEndpoint }}
           displayName: 'Azure PowerShell script: Stop ADF triggers'
+        # - task: CmdLine@2
+        #   inputs:
+        #     script: 'pwsh -File $(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1 -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true'
+        #   displayName: 'Azure PowerShell script: Stop ADF triggers'
 
 
         - task: AzureResourceGroupDeployment@2
