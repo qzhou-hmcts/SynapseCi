@@ -40,11 +40,11 @@ jobs:
       azureSubscriptionEndpoint: $(azure.subscription.endpoint)
       keyVaultName: ${{ parameters.ssKeyvaultName }}
       azureSecreKeys: '*'
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '$(pythonVersion)'
-      addToPath: true
-    displayName: 'Use Python Version: $(pythonVersion)'
+  # - task: UsePythonVersion@0
+  #   inputs:
+  #     versionSpec: '$(pythonVersion)'
+  #     addToPath: true
+  #   displayName: 'Use Python Version: $(pythonVersion)'
 
   - script: pip install -r requirements.txt
     workingDirectory: $(pythonWorkingDir)
