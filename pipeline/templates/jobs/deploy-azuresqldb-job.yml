@@ -44,18 +44,6 @@ jobs:
             inputs:
               downloadPath: $(System.ArtifactsDirectory)
               artifactName: ${{ parameters.artifactName }} #'sql_dw_dacpac'
-
-          - task: Bash@3
-            displayName: 'Azure SQL Dacpac backup'
-            inputs:
-              targetType: filePath
-              filePath: '$(Pipeline.Workspace)/self/_scripts/deploySqlPackage.sh'
-            env:
-              ServerName: ${{parameters.databaseServerName }}.database.windows.net
-              DatabaseName: ${{ parameters.databaseName }}
-              SqlUsername: '$(mi-datawarehouse-server-admin-user)'
-              SqlPassword: '$(mi-datawarehouse-server-admin-password)'
-              DeploymentAction: 'Extract'
           - task: Bash@3
             displayName: 'Azure SQL Dacpac backup'
             inputs:
