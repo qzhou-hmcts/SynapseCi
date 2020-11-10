@@ -60,7 +60,7 @@ jobs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             scriptType: pscore
             scriptLocation: scriptPath
-            scriptPath: $(Pipeline.Workspace)/_scripts/deploymentadf.ps1
+            scriptPath: $(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1
             arguments: -armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false'
             
             # inlineScript: |
