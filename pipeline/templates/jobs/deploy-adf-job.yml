@@ -6,7 +6,7 @@ parameters:
 
 jobs:
 - deployment: deploy_adf
-  # dependsOn: deploy_azuresqldw
+  dependsOn: deploy_azuresqldw
   displayName: 'Deploy to Azure Data Factory'
   pool: hmcts-ss-sandbox
 
