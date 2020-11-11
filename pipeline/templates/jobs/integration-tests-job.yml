@@ -25,10 +25,10 @@ jobs:
     pythonVersion: 3.6
   steps:
   - script: |
-      curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+      curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
       bash -c "curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list"
       apt-get update
-      ACCEPT_EULA=Y apt-get -y install msodbcsql17 unixodbc-dev
+      ACCEPT_EULA=Y apt-get -y install msodbcsql17 unixodbc-dev python3-dev python3-pip
     displayName: 'Install msodbc'
   - template: ../tasks/vault-secrets.yaml
     parameters: 
