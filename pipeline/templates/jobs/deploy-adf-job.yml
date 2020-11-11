@@ -23,8 +23,10 @@ jobs:
           path: 'adf_publish'
 
         - task: CmdLine@2
+          displayName: 'Prepare Az environment'
           inputs:
-            script: 'dir $(Pipeline.Workspace)'
+            script: |
+            'pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.1.2 -AllowClobber -Force'
         - task: AzurePowerShell@4
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
