@@ -1,3 +1,3 @@
 # SynapseCi
 
-Data warehouse probe of concept
+Data warehouse proof of concept
