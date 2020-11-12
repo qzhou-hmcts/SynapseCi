@@ -142,6 +142,10 @@
       <DefaultValue>password</DefaultValue>
       <Value>$(SqlCmdVar__1)</Value>
     </SqlCmdVariable>
+    <SqlCmdVariable Include="readerGroup">
+      <DefaultValue>dummy</DefaultValue>
+      <Value>$(SqlCmdVar__3)</Value>
+    </SqlCmdVariable>
     <SqlCmdVariable Include="SqlDwDatabaseName">
       <DefaultValue>SqlDwDatabaseName</DefaultValue>
       <Value>$(SqlCmdVar__2)</Value>
