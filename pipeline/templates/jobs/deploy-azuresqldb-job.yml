@@ -15,7 +15,7 @@ parameters:
   type: string
 - name: readerGroup
   type: string
-  default: 'DTS\ Readers\ Data Platform\ Nonprod'
+  default: "'DTS Readers Data Platform Nonprod'"
 
 jobs:
   - deployment: deploy_azuresqldw
@@ -71,4 +71,4 @@ jobs:
               TargetPassword: '$(mi-datawarehouse-server-admin-password)'
               DeploymentAction: 'Publish'
               DacpacFile: '$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac' 
-              AdditionalArguments: '/Variables:SqlDwDatabaseName=${{ parameters.databaseName }} /Variables:PipelinePassword=$(pipelinePassword) /Variables:readerGroup=${{ parameters.readerGroup }}'
+              AdditionalArguments: '/Variables:SqlDwDatabaseName=${{ parameters.databaseName }} /Variables:PipelinePassword=$(pipelinePassword) /Variables:"readerGroup=${{ parameters.readerGroup }}"'
