@@ -366,3 +366,4 @@ MigrationBackup/
 #dotenv
 .env
 
+.idea/*

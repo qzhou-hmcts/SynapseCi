@@ -7,37 +7,52 @@ parameters:
   type: string
 - name: keyvaultName
   type: string
+- name: ssKeyvaultName
+  type: string
+- name: adfName
+  type: string
 
 
 
 jobs:
 - job: run_integration_tests
   displayName: 'Run integration tests'
-  pool:
-    vmImage: 'ubuntu-latest'
+  dependsOn: deploy_adf
+  pool: hmcts-ss-sandbox
+
   variables:
     pythonWorkingDir: './'
     pythonVersion: 3.6
   steps:
   - script: |
-      curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-      sudo bash -c "curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list"
-      sudo apt-get update
-      sudo ACCEPT_EULA=Y apt-get -y install msodbcsql17 unixodbc-dev
+      curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+      bash -c "curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list"
+      apt-get update
+      ACCEPT_EULA=Y apt-get -y install msodbcsql17 unixodbc-dev python3-dev python3-pip
     displayName: 'Install msodbc'
   - template: ../tasks/vault-secrets.yaml
     parameters: 
       azureSubscriptionEndpoint: $(azure.subscription.endpoint)
       keyVaultName: ${{ parameters.keyvaultName }}
       azureSecreKeys: '*'
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '$(pythonVersion)'
-      addToPath: true
-      architecture: 'x64'
-    displayName: 'Use Python Version: $(pythonVersion)'
+  - template: ../tasks/vault-secrets.yaml
+    parameters:
+      azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+      keyVaultName: ${{ parameters.ssKeyvaultName }}
+      azureSecreKeys: '*'
+  # - task: UsePythonVersion@0
+  #   inputs:
+  #     versionSpec: '$(pythonVersion)'
+  #     addToPath: true
+  #   displayName: 'Use Python Version: $(pythonVersion)'
 
-  - script: pip install -r requirements.txt
+  - script: |
+      bash --version
+      alias python=python3
+      python --version
+      curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+      python3 get-pip.py
+      pip install -r requirements.txt
     workingDirectory: $(pythonWorkingDir)
     displayName: 'Install requirements'
 
@@ -48,6 +63,12 @@ jobs:
       SQL_SERVER_USERNAME: '$(mi-datawarehouse-server-admin-user)'
       SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)'
       SQL_DATABASE_NAME: ${{ parameters.databaseName }}
+      AZ_SERVICE_PRINCIPAL_ID: '$(sp-client-id)'
+      AZ_SERVICE_PRINCIPAL_SECRET: '$(sp-client-secret)'
+      AZ_SERVICE_PRINCIPAL_TENANT_ID: '$(sp-tenant-id)'
+      AZ_SUBSCRIPTION_ID: '$(sp-subscription-id)'
+      AZ_RESOURCE_GROUP_NAME: $(rgName)
+      AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
     displayName: 'Run integration tests'
 
   - script: make coverage
@@ -57,4 +78,10 @@ jobs:
       SQL_SERVER_USERNAME: '$(mi-datawarehouse-server-admin-user)'
       SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)'
       SQL_DATABASE_NAME: ${{ parameters.databaseName }}
+      AZ_SERVICE_PRINCIPAL_ID: $(AZ_SERVICE_PRINCIPAL_ID)
+      AZ_SERVICE_PRINCIPAL_SECRET: $(AZ_SERVICE_PRINCIPAL_SECRET)
+      AZ_SERVICE_PRINCIPAL_TENANT_ID: $(AZ_SERVICE_PRINCIPAL_TENANT_ID)
+      AZ_SUBSCRIPTION_ID: $(AZ_SUBSCRIPTION_ID)
+      AZ_RESOURCE_GROUP_NAME: $(rgName)
+      AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
     displayName: 'Run test coverage'

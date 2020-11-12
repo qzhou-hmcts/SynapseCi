@@ -1,0 +1,51 @@
+parameters:
+- name: environment
+  type: string
+- name: subscriptionEndpoint
+  type: string
+
+jobs:
+- deployment: deploy_adf
+  dependsOn: deploy_azuresqldw
+  displayName: 'Deploy to Azure Data Factory'
+  pool: hmcts-ss-sandbox
+
+  variables:
+    packageWheelName: 'none'
+  environment: ${{ parameters.environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - checkout: self
+          path: 'self'
+        - checkout: mi_synapse_integration
+          path: 'adf_publish'
+
+        - task: CmdLine@2
+          displayName: 'Prepare Az environment'
+          inputs:
+            script: 'pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.1.2 -AllowClobber -Force'
+        - task: AzurePowerShell@4
+          inputs:
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            ScriptPath: '$(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1'
+            ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true'
+            azurePowerShellVersion: LatestVersion
+          displayName: 'Azure PowerShell script: Stop ADF triggers'
+        - task: AzureResourceGroupDeployment@2
+          displayName: 'Azure Deployment:Create Or Update Resource Group action on $(rgName)'
+          inputs:
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            resourceGroupName: '$(rgName)'
+            location: '$(azureLocation)'
+            csmFile: '$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json'
+            csmParametersFile: '$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateParametersForFactory.json'
+            overrideParameters: -factoryName "$(adfName)" -AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://$(persistentStorage).blob.core.windows.net"
+        - task: AzurePowerShell@4
+          displayName: 'Azure PowerShell script: Start ADF triggers'
+          inputs:
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            ScriptPath: '$(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1'
+            ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false'
+            azurePowerShellVersion: LatestVersion
