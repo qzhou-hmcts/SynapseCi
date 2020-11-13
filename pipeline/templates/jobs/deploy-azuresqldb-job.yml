@@ -72,6 +72,10 @@ jobs:
           #     DeploymentAction: 'Publish'
           #     DacpacFile: '$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac' 
           #     AdditionalArguments: '/v:SqlDwDatabaseName=${{ parameters.databaseName }} /v:PipelinePassword=$(pipelinePassword) /v:readerGroup="${{ parameters.readerGroup }}"'
+          - task: CmdLine@2
+            displayName: 'Prepare Az environment'
+            inputs:
+              script: 'pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.1.2 -AllowClobber -Force'
           - task: AzurePowerShell@4
             displayName: 'Deploy Azure SQL Dacpac'
             inputs:
