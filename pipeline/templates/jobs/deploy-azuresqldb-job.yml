@@ -71,4 +71,4 @@ jobs:
               TargetPassword: '$(mi-datawarehouse-server-admin-password)'
               DeploymentAction: 'Publish'
               DacpacFile: '$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac' 
-              AdditionalArguments: '/Variables:SqlDwDatabaseName=${{ parameters.databaseName }} /Variables:PipelinePassword=$(pipelinePassword) /Variables:readerGroup=${{ parameters.readerGroup }}'
+              AdditionalArguments: '/v:SqlDwDatabaseName=${{ parameters.databaseName }} /v:PipelinePassword=$(pipelinePassword) /v:readerGroup="${{ parameters.readerGroup }}"'
