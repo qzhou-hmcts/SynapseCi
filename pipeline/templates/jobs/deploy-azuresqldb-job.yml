@@ -79,13 +79,13 @@ jobs:
               azureSubscription: ${{ parameters.subscriptionEndpoint }}
               azurePowerShellVersion: LatestVersion
               ScriptArguments:
-                - TargetServerName: ${{parameters.databaseServerName }}.database.windows.net
-                - TargetDatabaseName: ${{ parameters.databaseName }}
-                - TargetUser: '$(mi-datawarehouse-server-admin-user)'
-                - TargetPassword: '$(mi-datawarehouse-server-admin-password)'
-                - DeploymentAction: 'Publish'
-                - DacpacFile: '$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac' 
-                - '/v:SqlDwDatabaseName=${{ parameters.databaseName }}'
-                - '/v:PipelinePassword=$(pipelinePassword)'
-                - '/v:readerGroup="${{ parameters.readerGroup }}"'
+                /tsn=${{parameters.databaseServerName }}.database.windows.net
+                /tbn=${{ parameters.databaseName }}
+                /tu='$(mi-datawarehouse-server-admin-user)'
+                /tp='$(mi-datawarehouse-server-admin-password)'
+                /a='Publish'
+                /sf='$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac' 
+                '/v:SqlDwDatabaseName=${{ parameters.databaseName }}'
+                '/v:PipelinePassword=$(pipelinePassword)'
+                '/v:readerGroup="${{ parameters.readerGroup }}"'
 
