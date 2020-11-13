@@ -92,5 +92,5 @@ jobs:
                 /a='Publish'
                 /sf='$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac' 
                 '/v:SqlDwDatabaseName=${{ parameters.databaseName }}'
-                '/v:PipelinePassword=$(pipelinePassword)'
+                '/v:PipelinePassword="$(pipelinePassword)"'
                 '/v:readerGroup="${{ parameters.readerGroup }}"'
