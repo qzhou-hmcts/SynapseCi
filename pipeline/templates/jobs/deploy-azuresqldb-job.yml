@@ -86,7 +86,7 @@ jobs:
                 /tsn=${{parameters.databaseServerName }}.database.windows.net
                 /tbn=${{ parameters.databaseName }}
                 /tu='$(mi-datawarehouse-server-admin-user)'
-                "/tp='$(mi-datawarehouse-server-admin-password)'"
+                '/tp="$(mi-datawarehouse-server-admin-password)"'
                 /a='Publish'
                 /sf='$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac' 
                 '/v:SqlDwDatabaseName=${{ parameters.databaseName }}'
