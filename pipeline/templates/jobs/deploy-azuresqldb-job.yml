@@ -15,7 +15,7 @@ parameters:
   type: string
 - name: readerGroup
   type: string
-  default: "'DTS Readers Data Platform Nonprod'"
+  default: "DTS Readers Data Platform Nonprod"
 
 jobs:
   - deployment: deploy_azuresqldw
