@@ -85,12 +85,10 @@ jobs:
               azurePowerShellVersion: LatestVersion
               failOnStandardError: true
               ScriptArguments:
-                /tsn='${{parameters.databaseServerName }}.database.windows.net'
-                /tbn='${{ parameters.databaseName }}'
-                /tu='$(mi-datawarehouse-server-admin-user)'
-                '/tp="$(mi-datawarehouse-server-admin-password)"'
-                /a='Publish'
-                /sf='$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac' 
-                /v:SqlDwDatabaseName='${{ parameters.databaseName }}'
-                '/v:PipelinePassword="$(pipelinePassword)"'
-                '/v:readerGroup="${{ parameters.readerGroup }}"'
+                -tsn=${{parameters.databaseServerName }}.database.windows.net
+                -tbn=${{ parameters.databaseName }}
+                -tu=$(mi-datawarehouse-server-admin-user)
+                -tp='$(mi-datawarehouse-server-admin-password)''
+                -action='Publish'
+                -sf=$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac
+                -extra:'/v:SqlDwDatabaseName='${{ parameters.databaseName }} /v:PipelinePassword="$(pipelinePassword)" /v:readerGroup="${{ parameters.readerGroup }}"'

@@ -1,14 +1,17 @@
-
-
+param
+(
+    [parameter(Mandatory = $false)] [String] $action,
+    [parameter(Mandatory = $false)] [String] $tsn,
+    [parameter(Mandatory = $false)] [String] $tdn,
+    [parameter(Mandatory = $false)] [String] $tu,
+    [parameter(Mandatory = $false)] [String] $tp,
+    [parameter(Mandatory = $false)] [String] $sf,
+    [parameter(Mandatory = $false)] [String] $extra
+)
 
 $Command='sqlpackage'
-$numOfArgs = $args.Length - 1
-for ($i=0; $i -le $numOfArgs; $i++)
-{
-   $Command="$Command $($args[$i])"
-}
 
-Write-Host  "============================"
+$Command="$Command /a:$action /tsn:$tsn /tdn:$tdn /tu:$tu /tp:'$tp' /sf:$sf $extra"
 
-Write-Host  $Command
+Write-Host $Command
 $Command | Invoke-Expression
