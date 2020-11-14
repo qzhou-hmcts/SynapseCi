@@ -88,7 +88,7 @@ jobs:
                 -tsn:${{parameters.databaseServerName }}.database.windows.net
                 -tdn:${{ parameters.databaseName }}
                 -tu:$(mi-datawarehouse-server-admin-user)
-                -tp:'$(mi-datawarehouse-server-admin-password)''
+                -tp:'$(mi-datawarehouse-server-admin-password)'
                 -action:'Publish'
                 -sf:$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac
-                -extra:'/v:SqlDwDatabaseName='${{ parameters.databaseName }} /v:PipelinePassword="$(pipelinePassword)" /v:readerGroup="${{ parameters.readerGroup }}"'
+                -extra:'/v:SqlDwDatabaseName=${{ parameters.databaseName }} /v:PipelinePassword="$(pipelinePassword)" /v:readerGroup="${{ parameters.readerGroup }}"'
