@@ -13,6 +13,7 @@ Pre-Deployment Script Template
 :setvar PipelinePassword PipelinePassword
 :setvar DbName SqlDwDatabaseName
 :setvar ReaderGroup readerGroup
+SELECT * FROM [sys].[sysusers] where name = $(ReaderGroup);
 -- IF (NOT EXISTS(SELECT * FROM [sys].[sysusers] where name = $(ReaderGroup)))  
 -- BEGIN
 -- CREATE USER [$(ReaderGroup)] FOR EXTERNAL PROVIDER;
