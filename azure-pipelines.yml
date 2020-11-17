@@ -63,17 +63,7 @@ stages:
   displayName: 'Deploy project'
   condition: and(succeeded('build'), ne(variables['build.sourceBranch'], 'refs/heads/master'))
   jobs:
-  - template: ./pipeline/templates/tasks/vault-secrets.yaml
-    parameters: 
-      azureSubscriptionEndpoint: $(azure.subscription.endpoint)
-      keyVaultName: 'mi-vault-test'
-      azureSecreKeys: '*'
-  - template: ./pipeline/templates/tasks/vault-secrets.yaml
-    parameters:
-      azureSubscriptionEndpoint: $(azure.subscription.endpoint)
-      keyVaultName: 'ss-vault-test'
-      azureSecreKeys: '*'
-  # - task: UsePythonVersion@0
+    
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
       environment: $(environment)
@@ -96,11 +86,6 @@ stages:
       databaseServerName: 'mi-datawarehouse-server-test'
       databaseName: 'mi-datawarehouse-db-test'
       adfName: 'mi-ccd-datafactory-test'
-      sqlUserName: '$(mi-datawarehouse-server-admin-user)'
-      sqlUserPassword: '$(mi-datawarehouse-server-admin-password)'
-      servicePrincipalId: $(AZ_SERVICE_PRINCIPAL_ID)
-      servicePrincipalSecret: $(AZ_SERVICE_PRINCIPAL_SECRET)
-      tenantId: $(AZ_SERVICE_PRINCIPAL_TENANT_ID)
       resourceGroup: mi-test-rg
 
 
