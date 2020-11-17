@@ -5,14 +5,20 @@ parameters:
   type: string
 - name: subscriptionEndpoint
   type: string
-- name: keyvaultName
-  type: string
-- name: ssKeyvaultName
-  type: string
 - name: adfName
   type: string
-
-
+- name: sqlUserName
+  type: string
+- name: sqlUserPassword
+  type: string
+- name: servicePrincipalId
+  type: string
+- name: servicePrincipalSecret
+  type: string
+- name: tenantId
+  type: string
+- name: resourceGroup
+  type: string
 
 jobs:
 - job: run_integration_tests
@@ -30,16 +36,6 @@ jobs:
       apt-get update
       ACCEPT_EULA=Y apt-get -y install msodbcsql17 unixodbc-dev python3-dev python3-pip
     displayName: 'Install msodbc'
-  - template: ../tasks/vault-secrets.yaml
-    parameters: 
-      azureSubscriptionEndpoint: $(azure.subscription.endpoint)
-      keyVaultName: ${{ parameters.keyvaultName }}
-      azureSecreKeys: '*'
-  - template: ../tasks/vault-secrets.yaml
-    parameters:
-      azureSubscriptionEndpoint: $(azure.subscription.endpoint)
-      keyVaultName: ${{ parameters.ssKeyvaultName }}
-      azureSecreKeys: '*'
   # - task: UsePythonVersion@0
   #   inputs:
   #     versionSpec: '$(pythonVersion)'
@@ -60,15 +56,15 @@ jobs:
     workingDirectory: $(pythonWorkingDir)
     env:
       SQL_SERVER_NAME: ${{parameters.databaseServerName }}
-      SQL_SERVER_USERNAME: '$(mi-datawarehouse-server-admin-user)'
-      SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)'
+      SQL_SERVER_USERNAME: ${{parameters.sqlUserName }}
+      SQL_SERVER_PASSWORD: ${{parameters.sqlUserPassword }}
       SQL_DATABASE_NAME: ${{ parameters.databaseName }}
-      AZ_SERVICE_PRINCIPAL_ID: '$(sp-client-id)'
-      AZ_SERVICE_PRINCIPAL_SECRET: '$(sp-client-secret)'
-      AZ_SERVICE_PRINCIPAL_TENANT_ID: '$(sp-tenant-id)'
-      AZ_SUBSCRIPTION_ID: '$(sp-subscription-id)'
-      AZ_RESOURCE_GROUP_NAME: $(rgName)
-      AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
+      AZ_SERVICE_PRINCIPAL_ID: ${{parameters.servicePrincipalId }}
+      AZ_SERVICE_PRINCIPAL_SECRET: ${{parameters.servicePrincipalSecret }}
+      AZ_SERVICE_PRINCIPAL_TENANT_ID: ${{parameters.tenantId }}
+      AZ_SUBSCRIPTION_ID: ${{parameters.subscriptionEndpoint }}
+      AZ_RESOURCE_GROUP_NAME: ${{parameters.resourceGroup }}
+      AZ_DATAFACTORY_NAME: ${{parameters.adfName }}
     displayName: 'Run integration tests'
 
   - script: make coverage
