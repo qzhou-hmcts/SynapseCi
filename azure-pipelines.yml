@@ -63,7 +63,7 @@ stages:
   displayName: 'Deploy project'
   condition: and(succeeded('build'), ne(variables['build.sourceBranch'], 'refs/heads/master'))
   jobs:
-    
+
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
       environment: $(environment)
@@ -87,6 +87,8 @@ stages:
       databaseName: 'mi-datawarehouse-db-test'
       adfName: 'mi-ccd-datafactory-test'
       resourceGroup: mi-test-rg
+      keyvaultName: 'mi-vault-test'
+      ssKeyvaultName: 'ss-vault-test'
 
 
 - stage: 'DeployStaging'
