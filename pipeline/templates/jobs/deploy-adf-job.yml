@@ -3,7 +3,12 @@ parameters:
   type: string
 - name: subscriptionEndpoint
   type: string
-
+- name: adfName
+  type: string
+- name: resourceGroup
+  type: string
+- name: adfOverrideParameters
+  type: string
 jobs:
 - deployment: deploy_adf
   dependsOn: deploy_azuresqldw
@@ -30,22 +35,22 @@ jobs:
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             ScriptPath: '$(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1'
-            ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $true'
+            ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/adf_publish/ARMTemplateForFactory.json" -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -predeployment $true'
             azurePowerShellVersion: LatestVersion
           displayName: 'Azure PowerShell script: Stop ADF triggers'
         - task: AzureResourceGroupDeployment@2
-          displayName: 'Azure Deployment:Create Or Update Resource Group action on $(rgName)'
+          displayName: 'Azure Deployment:Create Or Update Resource Group action on ${{ parameters.resourceGroup }}'
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
-            resourceGroupName: '$(rgName)'
+            resourceGroupName: ${{ parameters.resourceGroup }}
             location: '$(azureLocation)'
-            csmFile: '$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json'
-            csmParametersFile: '$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateParametersForFactory.json'
-            overrideParameters: -factoryName "$(adfName)" -AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://$(persistentStorage).blob.core.windows.net"
+            csmFile: '$(Pipeline.Workspace)/adf_publish/ARMTemplateForFactory.json'
+            csmParametersFile: '$(Pipeline.Workspace)/adf_publish/ARMTemplateParametersForFactory.json'
+            overrideParameters: -factoryName ${{ parameters.adfName }} ${{ parameters.adfOverrideParameters }} 
         - task: AzurePowerShell@4
           displayName: 'Azure PowerShell script: Start ADF triggers'
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             ScriptPath: '$(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1'
-            ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/adf_publish/$(devAdfName)/ARMTemplateForFactory.json" -ResourceGroupName "$(rgName)" -DataFactoryName "$(adfName)" -predeployment $false'
+            ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/adf_publish/ARMTemplateForFactory.json" -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -predeployment $false'
             azurePowerShellVersion: LatestVersion

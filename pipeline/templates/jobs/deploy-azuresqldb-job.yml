@@ -13,6 +13,9 @@ parameters:
   type: string
 - name: keyvaultName
   type: string
+- name: readerGroup
+  type: string
+  default: "DTS Readers Data Platform Nonprod"
 
 jobs:
   - deployment: deploy_azuresqldw
@@ -56,16 +59,36 @@ jobs:
               SqlPassword: '$(mi-datawarehouse-server-admin-password)'
               DeploymentAction: 'Extract'
               TargetFile: 'backup.dacpac'
-          - task: Bash@3
+          # - task: Bash@3
+          #   displayName: 'Deploy Azure SQL Dacpac'
+          #   inputs:
+          #     targetType: filePath
+          #     filePath: '$(Pipeline.Workspace)/self/_scripts/deploySqlPackage.sh'
+          #   env:
+          #     TargetServerName: ${{parameters.databaseServerName }}.database.windows.net
+          #     TargetDatabaseName: ${{ parameters.databaseName }}
+          #     TargetUser: '$(mi-datawarehouse-server-admin-user)'
+          #     TargetPassword: '$(mi-datawarehouse-server-admin-password)'
+          #     DeploymentAction: 'Publish'
+          #     DacpacFile: '$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac' 
+          #     AdditionalArguments: '/v:SqlDwDatabaseName=${{ parameters.databaseName }} /v:PipelinePassword=$(pipelinePassword) /v:readerGroup="${{ parameters.readerGroup }}"'
+          - task: CmdLine@2
+            displayName: 'Prepare Az environment'
+            inputs:
+              script: 'pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.1.2 -AllowClobber -Force'
+ 
+          - task: AzurePowerShell@4
             displayName: 'Deploy Azure SQL Dacpac'
             inputs:
-              targetType: filePath
-              filePath: '$(Pipeline.Workspace)/self/_scripts/deploySqlPackage.sh'
-            env:
-              TargetServerName: ${{parameters.databaseServerName }}.database.windows.net
-              TargetDatabaseName: ${{ parameters.databaseName }}
-              TargetUser: '$(mi-datawarehouse-server-admin-user)'
-              TargetPassword: '$(mi-datawarehouse-server-admin-password)'
-              DeploymentAction: 'Publish'
-              DacpacFile: '$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac' 
-              AdditionalArguments: '/Variables:SqlDwDatabaseName=${{ parameters.databaseName }} /Variables:PipelinePassword=$(pipelinePassword)'
+              ScriptPath: '$(Pipeline.Workspace)/self/_scripts/deploySqlPackage.ps1'
+              azureSubscription: ${{ parameters.subscriptionEndpoint }}
+              azurePowerShellVersion: LatestVersion
+              failOnStandardError: true
+              ScriptArguments:
+                -tsn:${{parameters.databaseServerName }}.database.windows.net
+                -tdn:${{ parameters.databaseName }}
+                -tu:$(mi-datawarehouse-server-admin-user)
+                -tp:'$(mi-datawarehouse-server-admin-password)'
+                -action:'Publish'
+                -sf:$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac
+                -extra:'/v:SqlDwDatabaseName=${{ parameters.databaseName }} /v:PipelinePassword="$(pipelinePassword)" /v:readerGroup="${{ parameters.readerGroup }}"'
