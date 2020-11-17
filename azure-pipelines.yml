@@ -119,6 +119,7 @@ stages:
       keyvaultName: 'mi-vault-stg'
       ssKeyvaultName: 'ss-vault-stg'
       adfName: 'mi-ccd-datafactory-stg'
+      resourceGroup: mi-stg-rg
 
 - stage: 'DeployProd'
   displayName: 'Deploy production'
