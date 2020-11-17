@@ -63,12 +63,12 @@ stages:
   displayName: 'Deploy project'
   condition: and(succeeded('build'), ne(variables['build.sourceBranch'], 'refs/heads/master'))
   jobs:
-  - template: ../tasks/vault-secrets.yaml
+  - template: ./tasks/vault-secrets.yaml
     parameters: 
       azureSubscriptionEndpoint: $(azure.subscription.endpoint)
       keyVaultName: 'mi-vault-test'
       azureSecreKeys: '*'
-  - template: ../tasks/vault-secrets.yaml
+  - template: ./tasks/vault-secrets.yaml
     parameters:
       azureSubscriptionEndpoint: $(azure.subscription.endpoint)
       keyVaultName: 'ss-vault-test'
