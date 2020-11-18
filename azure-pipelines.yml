@@ -63,6 +63,7 @@ stages:
   displayName: 'Deploy project'
   condition: and(succeeded('build'), ne(variables['build.sourceBranch'], 'refs/heads/master'))
   jobs:
+
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
       environment: $(environment)
@@ -76,14 +77,19 @@ stages:
     parameters:
       environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
+      adfName: mi-ccd-datafactory-test
+      resourceGroup: mi-test-rg
+      adfOverrideParameters: '-AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://mipersistenttest.blob.core.windows.net"'
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       databaseServerName: 'mi-datawarehouse-server-test'
       databaseName: 'mi-datawarehouse-db-test'
+      adfName: 'mi-ccd-datafactory-test'
+      resourceGroup: mi-test-rg
       keyvaultName: 'mi-vault-test'
       ssKeyvaultName: 'ss-vault-test'
-      adfName: 'mi-ccd-datafactory-test'
+
 
 - stage: 'DeployStaging'
   displayName: 'Deploy project on staging env'
@@ -102,6 +108,9 @@ stages:
     parameters:
       environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
+      adfName: mi-ccd-datafactory-stg
+      resourceGroup: mi-stg-rg
+      adfOverrideParameters: '-AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://mipersistentstg.blob.core.windows.net"'
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
@@ -110,6 +119,7 @@ stages:
       keyvaultName: 'mi-vault-stg'
       ssKeyvaultName: 'ss-vault-stg'
       adfName: 'mi-ccd-datafactory-stg'
+      resourceGroup: mi-stg-rg
 
 - stage: 'DeployProd'
   displayName: 'Deploy production'
@@ -117,7 +127,7 @@ stages:
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
-      environment: 'prod'
+      environment: prod
       subscriptionEndpoint: DTS-SHAREDSERVICES-STG
       databaseServerName: $(sqlsrvrName)
       databaseName: 'mi-datawarehouse-db-prod'
@@ -126,7 +136,10 @@ stages:
       keyvaultName: 'mi-vault-prod'
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
-      environment: $(environment)
+      environment: prod
       subscriptionEndpoint: $(azure.subscription.endpoint)
+      adfName: mi-ccd-datafactory-prod
+      resourceGroup: mi-prod-rg
+      adfOverrideParameters: '-AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://mipersistentprod.blob.core.windows.net"'
 
  
