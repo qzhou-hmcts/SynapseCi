@@ -57,14 +57,14 @@ jobs:
     displayName: 'Install requirements'
 
   - task: AzureCLI@2
-    displayName: Azure CLI
+    displayName: 'Run integration tests'
     inputs:
       azureSubscription: $(azure.subscription.endpoint)
       scriptType: bash
       scriptLocation: inlineScript
       inlineScript: |
         make test
-    workingDirectory: $(pythonWorkingDir)
+    # workingDirectory: $(pythonWorkingDir)
     env:
       SQL_SERVER_NAME: ${{parameters.databaseServerName }}
       SQL_DATABASE_NAME: ${{ parameters.databaseName }}
@@ -72,7 +72,6 @@ jobs:
       SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)' 
       AZ_RESOURCE_GROUP_NAME: ${{parameters.resourceGroup }}
       AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
-    displayName: 'Run integration tests'
 
   - script: make coverage
     workingDirectory: $(pythonWorkingDir)
