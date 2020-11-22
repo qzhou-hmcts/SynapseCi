@@ -8,10 +8,10 @@ trigger:
 
 resources:
   repositories:
-  - repository: mi_synapse_integration
+  - repository: adf_project
     type: github
     endpoint: hmcts
-    name: hmcts/mi-synapse-integration
+    name: qzhou-hmcts/datafactory
     ref: adf_publish
     trigger:  # CI trigger for this repository, no CI trigger if skipped (only works for Azure Repos)
       branches: 
@@ -38,32 +38,28 @@ stages:
       vmImage: 'windows-latest'
     steps:
     - task: NuGetToolInstaller@1
-
     - task: NuGetCommand@2
       inputs:
         restoreSolution: '$(solution)'
-
     - task: VSBuild@1
       inputs:
         solution: '$(solution)'
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'
-
     - task: VSTest@2
       inputs:
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'
-
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(sqlDwPath)/bin/$(buildConfiguration)/synapse.dacpac'
         ArtifactName: 'sql_dw_dacpac'
       displayName: 'Publish SQL DACPAC'  
+
 - stage: 'Deploy'
   displayName: 'Deploy project'
   condition: and(succeeded('build'), ne(variables['build.sourceBranch'], 'refs/heads/master'))
   jobs:
-
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
       environment: $(environment)

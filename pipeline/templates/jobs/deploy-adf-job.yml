@@ -24,7 +24,7 @@ jobs:
         steps:
         - checkout: self
           path: 'self'
-        - checkout: mi_synapse_integration
+        - checkout: adf_project
           path: 'adf_publish'
 
         - task: CmdLine@2
