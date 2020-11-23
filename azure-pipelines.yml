@@ -75,7 +75,7 @@ stages:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       adfName: mi-ccd-datafactory-test
       resourceGroup: mi-test-rg
-      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistenttest.blob.core.windows.net" -MI_synapse_mi_connectionString someparameter'
+      adfOverrideParameters: '-AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://mipersistenttest.blob.core.windows.net"'
       adfFolder: mi-ccd-datafactory-test
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
