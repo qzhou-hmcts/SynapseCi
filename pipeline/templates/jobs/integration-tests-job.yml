@@ -85,3 +85,9 @@ jobs:
       AZ_RESOURCE_GROUP_NAME: ${{parameters.resourceGroup }}
       AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
     displayName: 'Run test coverage'
+  - task: PublishPipelineArtifact@1
+    condition: succeededOrFailed()
+    inputs:
+      path: '$(System.DefaultWorkingDirectory)/reports/test/'
+      artifact: '*'
+      displayName: 'Publish test report'
