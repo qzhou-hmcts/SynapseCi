@@ -75,7 +75,7 @@ stages:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       adfName: mi-ingestion-adf-test
       resourceGroup: mi-test-rg
-      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistenttest.blob.core.windows.net"'
+      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistenttest.blob.core.windows.net" -MI_synapse_mi_connectionString "server=tcp:mi-datawarehouse-server-test.database.windows.net;database=mi-datawarehouse-db-test;UID=AnyString;Authentication=Active Directory Interactive"'
       adfFolder: mi-ccd-datafactory-test
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
