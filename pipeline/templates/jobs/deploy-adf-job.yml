@@ -35,12 +35,12 @@ jobs:
           inputs:
             script: 'pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.1.2 -AllowClobber -Force'
         - task: AzurePowerShell@4
+          displayName: 'Azure PowerShell script: Stop ADF triggers'
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             ScriptPath: '$(Pipeline.Workspace)/self/_scripts/deploymentadf.ps1'
             ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/adf_publish/${{ parameters.adfFolder }}/ARMTemplateForFactory.json" -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -predeployment $true'
             azurePowerShellVersion: LatestVersion
-          displayName: 'Azure PowerShell script: Stop ADF triggers'
         - task: AzureResourceGroupDeployment@2
           displayName: 'Azure Deployment:Create Or Update Resource Group action on ${{ parameters.resourceGroup }}'
           inputs:
