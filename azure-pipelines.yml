@@ -8,10 +8,10 @@ trigger:
 
 resources:
   repositories:
-  - repository: mi_synapse_integration
+  - repository: adf_project
     type: github
     endpoint: hmcts
-    name: hmcts/mi-synapse-integration
+    name: qzhou-hmcts/datafactory
     ref: adf_publish
     trigger:  # CI trigger for this repository, no CI trigger if skipped (only works for Azure Repos)
       branches: 
@@ -38,27 +38,24 @@ stages:
       vmImage: 'windows-latest'
     steps:
     - task: NuGetToolInstaller@1
-
     - task: NuGetCommand@2
       inputs:
         restoreSolution: '$(solution)'
-
     - task: VSBuild@1
       inputs:
         solution: '$(solution)'
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'
-
     - task: VSTest@2
       inputs:
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'
-
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(sqlDwPath)/bin/$(buildConfiguration)/synapse.dacpac'
         ArtifactName: 'sql_dw_dacpac'
       displayName: 'Publish SQL DACPAC'  
+
 - stage: 'Deploy'
   displayName: 'Deploy project'
   condition: and(succeeded('build'), ne(variables['build.sourceBranch'], 'refs/heads/master'))
@@ -76,14 +73,22 @@ stages:
     parameters:
       environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
+      adfName: mi-ingestion-adf-test
+      resourceGroup: mi-test-rg
+      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistenttest.blob.core.windows.net"
+       -mi_synapse_kv_connectionString "Server=tcp:mi-datawarehouse-server-test.database.windows.net,1433;Initial Catalog=mi-datawarehouse-db-test;Persist Security Info=False;User ID=mi-server-admin;Password=$(sqlsrvrPassword);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" 
+       -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-test.database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-test;Database=mi-datawarehouse-db-test;Connection Timeout=30"'
+      adfFolder: mi-ccd-datafactory-test
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       databaseServerName: 'mi-datawarehouse-server-test'
       databaseName: 'mi-datawarehouse-db-test'
+      adfName: mi-ingestion-adf-test
+      resourceGroup: mi-test-rg
       keyvaultName: 'mi-vault-test'
       ssKeyvaultName: 'ss-vault-test'
-      adfName: 'mi-ccd-datafactory-test'
+
 
 - stage: 'DeployStaging'
   displayName: 'Deploy project on staging env'
@@ -102,6 +107,9 @@ stages:
     parameters:
       environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
+      adfName: mi-ccd-datafactory-stg
+      resourceGroup: mi-stg-rg
+      adfOverrideParameters: '-AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://mipersistentstg.blob.core.windows.net"'
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
@@ -110,6 +118,7 @@ stages:
       keyvaultName: 'mi-vault-stg'
       ssKeyvaultName: 'ss-vault-stg'
       adfName: 'mi-ccd-datafactory-stg'
+      resourceGroup: mi-stg-rg
 
 - stage: 'DeployProd'
   displayName: 'Deploy production'
@@ -117,7 +126,7 @@ stages:
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
-      environment: 'prod'
+      environment: prod
       subscriptionEndpoint: DTS-SHAREDSERVICES-STG
       databaseServerName: $(sqlsrvrName)
       databaseName: 'mi-datawarehouse-db-prod'
@@ -126,7 +135,10 @@ stages:
       keyvaultName: 'mi-vault-prod'
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
-      environment: $(environment)
+      environment: prod
       subscriptionEndpoint: $(azure.subscription.endpoint)
+      adfName: mi-ccd-datafactory-prod
+      resourceGroup: mi-prod-rg
+      adfOverrideParameters: '-AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://mipersistentprod.blob.core.windows.net"'
 
  

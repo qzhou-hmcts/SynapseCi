@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -x
 DYLD_PRINT_LIBRARIES=1
 
 arguments=''
@@ -28,6 +28,7 @@ if [ -z "$arguments" ]
 then
     echo "empty arguments"
 else
+    echo $AdditionalArguments
     arguments="$arguments $AdditionalArguments"
 fi
 

@@ -10,7 +10,6 @@ Pre-Deployment Script Template
 --------------------------------------------------------------------------------------
 */
 
-:setvar PipelinePassword PipelinePassword
-:setvar DbName SqlDwDatabaseName
+PRINT 'User group is $(readerGroup)'
+SELECT * FROM [sys].[sysusers] where name = '$(readerGroup)';
 
-SELECT * from sys.databases
