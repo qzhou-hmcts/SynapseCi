@@ -73,7 +73,7 @@ stages:
     parameters:
       environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      adfName: mi-ccd-datafactory-test
+      adfName: mi-synapse-adf-test
       resourceGroup: mi-test-rg
       adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistenttest.blob.core.windows.net"'
       adfFolder: mi-ccd-datafactory-test
@@ -82,7 +82,7 @@ stages:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       databaseServerName: 'mi-datawarehouse-server-test'
       databaseName: 'mi-datawarehouse-db-test'
-      adfName: 'mi-ccd-datafactory-test'
+      adfName: mi-synapse-adf-test
       resourceGroup: mi-test-rg
       keyvaultName: 'mi-vault-test'
       ssKeyvaultName: 'ss-vault-test'
