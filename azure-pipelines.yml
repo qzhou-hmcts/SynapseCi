@@ -82,7 +82,7 @@ stages:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       databaseServerName: 'mi-datawarehouse-server-test'
       databaseName: 'mi-datawarehouse-db-test'
-      adfName: mi-synapse-adf-test
+      adfName: mi-ingestion-adf-test
       resourceGroup: mi-test-rg
       keyvaultName: 'mi-vault-test'
       ssKeyvaultName: 'ss-vault-test'
