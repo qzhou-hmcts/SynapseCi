@@ -73,7 +73,7 @@ stages:
     parameters:
       environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      adfName: mi-synapse-adf-test
+      adfName: mi-ingestion-adf-test
       resourceGroup: mi-test-rg
       adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistenttest.blob.core.windows.net"'
       adfFolder: mi-ccd-datafactory-test
