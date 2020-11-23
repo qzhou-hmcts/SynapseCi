@@ -76,8 +76,8 @@ stages:
       adfName: mi-ingestion-adf-test
       resourceGroup: mi-test-rg
       adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistenttest.blob.core.windows.net"
-       -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-test.database.windows.net,1433;Initial Catalog=mi-datawarehouse-db-test;Persist Security Info=False;User ID=mi-server-admin;Password=$(sqlsrvrPassword);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" 
-       -mi_synapse_kv_connectionString "Server=tcp:mi-datawarehouse-server-test.database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-test;Database=mi-datawarehouse-db-test;Connection Timeout=30"'
+       -mi_synapse_kv_connectionString "Server=tcp:mi-datawarehouse-server-test.database.windows.net,1433;Initial Catalog=mi-datawarehouse-db-test;Persist Security Info=False;User ID=mi-server-admin;Password=$(sqlsrvrPassword);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" 
+       -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-test.database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-test;Database=mi-datawarehouse-db-test;Connection Timeout=30"'
       adfFolder: mi-ccd-datafactory-test
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
