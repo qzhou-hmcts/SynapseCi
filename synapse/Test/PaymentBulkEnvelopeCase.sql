@@ -6,7 +6,7 @@ GO
 CREATE TABLE [payment].[BulkEnvelopCase]
 (
     id NUMERIC(38) NOT NULL,
-    ccd_reference VARCHAR(255) NOT NULL,
+    ccd_reference VARCHAR(255) NULL,
     date_created DATE NULL,
     exception_record_reference VARCHAR(255) NULL, 
     data_updated DATE NULL,
