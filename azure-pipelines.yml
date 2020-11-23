@@ -25,9 +25,8 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   sqlDwPath: 'synapse'
-  azure.subscription.endpoint: 'DTS-SHAREDSERVICES-DEV'
-  keyvault.name: 'mi-vault-dev'
-
+  azure.subscription.endpoint: 'DTS-SHAREDSERVICES-TEST'
+  keyvault.name: 'mi-vault-test'
 stages:
 - stage: 'build'
   displayName: 'Validate project'
@@ -65,28 +64,28 @@ stages:
     parameters:
       environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      databaseServerName: 'mi-datawarehouse-server-dev'
-      databaseName: 'mi-datawarehouse-db-dev'
+      databaseServerName: 'mi-datawarehouse-server-test'
+      databaseName: 'mi-datawarehouse-db-test'
       projectName: 'synapse'
       artifactName: 'sql_dw_dacpac'
-      keyvaultName: 'mi-vault-dev'
+      keyvaultName: 'mi-vault-test'
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
       environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      adfName: mi-synapse-adf-dev
-      resourceGroup: mi-dev-rg
-      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistentdev.blob.core.windows.net"'
+      adfName: mi-synapse-adf-test
+      resourceGroup: mi-test-rg
+      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistenttest.blob.core.windows.net"'
       adfFolder: mi-ccd-datafactory-test
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      databaseServerName: 'mi-datawarehouse-server-dev'
-      databaseName: 'mi-datawarehouse-db-dev'
-      adfName: mi-synapse-adf-dev
-      resourceGroup: mi-dev-rg
-      keyvaultName: 'mi-vault-dev'
-      ssKeyvaultName: 'dtssharedservicesdevkv'
+      databaseServerName: 'mi-datawarehouse-server-test'
+      databaseName: 'mi-datawarehouse-db-test'
+      adfName: mi-synapse-adf-test
+      resourceGroup: mi-test-rg
+      keyvaultName: 'mi-vault-test'
+      ssKeyvaultName: 'ss-vault-test'
 
 
 - stage: 'DeployStaging'
