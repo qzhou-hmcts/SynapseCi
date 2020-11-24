@@ -86,10 +86,10 @@ jobs:
       AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
     displayName: 'Run test coverage'
 
- - task: PublishTestResults@2
-   inputs:
-     testResultsFormat: 'JUnit'
-     testResultsFiles: '**/reports/test/*.xml'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/reports/test/*.xml'
 
   - task: PublishPipelineArtifact@1
     condition: succeededOrFailed()
