@@ -1,5 +1,6 @@
 pytest
 pytest-runner
+pytest-html
 pyodbc
 azure-mgmt-datafactory
 pytest-adf

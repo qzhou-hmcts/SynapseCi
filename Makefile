@@ -56,7 +56,7 @@ lint: ## check style with flake8
 		flake8 $(PYTHON_PACKAGE)
 
 test: ## run tests quickly with the default Python
-	py.test --junitxml=reports/test/integrationTest.xml
+	py.test --junitxml=reports/test/integrationTest.xml  --html=reports/test/unit-test.html
 
 coverage: ## check code coverage quickly with the default Python
 	coverage run --source $(PYTHON_PACKAGE) -m pytest
