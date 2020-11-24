@@ -89,5 +89,5 @@ jobs:
     condition: succeededOrFailed()
     inputs:
       path: '$(System.DefaultWorkingDirectory)/reports/test/'
-      artifact: '*'
+      artifact: 'test'
       displayName: 'Publish test report'
