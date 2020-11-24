@@ -87,6 +87,7 @@ jobs:
     displayName: 'Run test coverage'
 
   - task: PublishTestResults@2
+    condition: succeededOrFailed()
     inputs:
       testResultsFormat: 'JUnit'
       testResultsFiles: '**/reports/test/*.xml'
