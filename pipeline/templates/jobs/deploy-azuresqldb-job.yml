@@ -1,18 +1,22 @@
 parameters:
-- name: environment
-  type: string
 - name: artifactName
   type: string
+  default: "sql_dw_dacpac"
 - name: projectName
   type: string
+  default: "synapse"
 - name: databaseName
   type: string
+  default: "mi-datawarehouse-db-$(environment)"
 - name: databaseServerName
   type: string
+  default: "mi-datawarehouse-server-$(environment)"
 - name: subscriptionEndpoint
   type: string
+  default: "DTS-SHAREDSERVICES-${{ upper($(environment)) }}"
 - name: keyvaultName
   type: string
+  default: "mi-vault-$(environment)"
 - name: readerGroup
   type: string
   default: "DTS Readers Data Platform Nonprod"
@@ -26,7 +30,7 @@ jobs:
     variables:
       sqlProjName: ${{ parameters.projectName }}
       sqlDwDatabaseName: ${{ parameters.databaseName }}
-    environment: ${{ parameters.environment }}
+    environment: $(environment)
     strategy:
       runOnce:
         deploy:
@@ -59,19 +63,6 @@ jobs:
               SqlPassword: '$(mi-datawarehouse-server-admin-password)'
               DeploymentAction: 'Extract'
               TargetFile: 'backup.dacpac'
-          # - task: Bash@3
-          #   displayName: 'Deploy Azure SQL Dacpac'
-          #   inputs:
-          #     targetType: filePath
-          #     filePath: '$(Pipeline.Workspace)/self/_scripts/deploySqlPackage.sh'
-          #   env:
-          #     TargetServerName: ${{parameters.databaseServerName }}.database.windows.net
-          #     TargetDatabaseName: ${{ parameters.databaseName }}
-          #     TargetUser: '$(mi-datawarehouse-server-admin-user)'
-          #     TargetPassword: '$(mi-datawarehouse-server-admin-password)'
-          #     DeploymentAction: 'Publish'
-          #     DacpacFile: '$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac' 
-          #     AdditionalArguments: '/v:SqlDwDatabaseName=${{ parameters.databaseName }} /v:PipelinePassword=$(pipelinePassword) /v:readerGroup="${{ parameters.readerGroup }}"'
           - task: CmdLine@2
             displayName: 'Prepare Az environment'
             inputs:

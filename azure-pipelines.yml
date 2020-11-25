@@ -63,38 +63,31 @@ stages:
   condition: and(succeeded('build'), ne(variables['build.sourceBranch'], 'refs/heads/master'))
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
-    parameters:
-      environment: $(environment)
-      subscriptionEndpoint: $(azure.subscription.endpoint)
-      databaseServerName: mi-datawarehouse-server-$(environment)
-      databaseName: mi-datawarehouse-db-$(environment)
-      projectName: 'synapse'
-      artifactName: 'sql_dw_dacpac'
-      keyvaultName: mi-vault-$(environment)
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
       environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      adfName: mi-ingestion-adf-test
-      resourceGroup: mi-test-rg
-      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistenttest.blob.core.windows.net"
-       -mi_synapse_kv_connectionString "Server=tcp:mi-datawarehouse-server-test.database.windows.net,1433;Initial Catalog=mi-datawarehouse-db-test;Persist Security Info=False;User ID=mi-server-admin;Password=$(sqlsrvrPassword);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" 
-       -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-test.database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-test;Database=mi-datawarehouse-db-test;Connection Timeout=30"'
+      adfName: mi-ingestion-adf-$(environment)
+      resourceGroup: mi-$(environment)-rg
+      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistent$(environment).blob.core.windows.net"
+       -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-$(environment).database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-$(environment);Database=mi-datawarehouse-db-$(environment);Connection Timeout=30"'
       adfFolder: mi-ccd-datafactory-test
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      databaseServerName: 'mi-datawarehouse-server-test'
-      databaseName: 'mi-datawarehouse-db-test'
-      adfName: mi-ingestion-adf-test
-      resourceGroup: mi-test-rg
-      keyvaultName: 'mi-vault-test'
-      ssKeyvaultName: 'ss-vault-test'
+      databaseServerName: 'mi-datawarehouse-server-$(environment)'
+      databaseName: 'mi-datawarehouse-db-$(environment)'
+      adfName: mi-ingestion-adf-$(environment)
+      resourceGroup: mi-$(environment)-rg
+      keyvaultName: 'mi-vault-$(environment)'
+      ssKeyvaultName: 'ss-vault-$(environment)'
 
 
 - stage: 'DeployStaging'
   displayName: 'Deploy project on staging env'
   condition: and(succeeded('build'), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  variables:
+    environment: stg
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
@@ -111,7 +104,8 @@ stages:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       adfName: mi-ccd-datafactory-stg
       resourceGroup: mi-stg-rg
-      adfOverrideParameters: '-AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://mipersistentstg.blob.core.windows.net"'
+      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistent$(environment).blob.core.windows.net"
+       -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-$(environment).database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-$(environment);Database=mi-datawarehouse-db-$(environment);Connection Timeout=30"'
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
@@ -141,6 +135,6 @@ stages:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       adfName: mi-ccd-datafactory-prod
       resourceGroup: mi-prod-rg
-      adfOverrideParameters: '-AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://mipersistentprod.blob.core.windows.net"'
-
+      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistent$(environment).blob.core.windows.net"
+      -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-$(environment).database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-$(environment);Database=mi-datawarehouse-db-$(environment);Connection Timeout=30"'
  
