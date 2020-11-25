@@ -25,7 +25,6 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   sqlDwPath: 'synapse'
-  azure.subscription.endpoint: 'DTS-SHAREDSERVICES-TEST'
   keyvault.name: 'mi-vault-test'
 stages:
 - stage: 'build'
@@ -60,11 +59,12 @@ stages:
   displayName: 'Deploy project'
   variables:
     environment: test
+    azure.subscription.endpoint: 'DTS-SHAREDSERVICES-TEST'
   condition: and(succeeded('build'), ne(variables['build.sourceBranch'], 'refs/heads/master'))
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
-      subscriptionEndpoint: "DTS-SHAREDSERVICES-${{ upper($(environment)) }}"
+      subscriptionEndpoint: $(azure.subscription.endpoint)
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
       environment: $(environment)
@@ -90,6 +90,7 @@ stages:
   condition: and(succeeded('build'), eq(variables['build.sourceBranch'], 'refs/heads/master'))
   variables:
     environment: stg
+    azure.subscription.endpoint: 'DTS-SHAREDSERVICES-STG'
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
@@ -121,6 +122,9 @@ stages:
 - stage: 'DeployProd'
   displayName: 'Deploy production'
   condition: and(succeeded('DeployStaging'), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  variables:
+    environment: prod
+    azure.subscription.endpoint: 'DTS-SHAREDSERVICES-PROD'
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
