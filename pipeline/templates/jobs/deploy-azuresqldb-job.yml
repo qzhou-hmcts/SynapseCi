@@ -13,7 +13,6 @@ parameters:
   default: "mi-datawarehouse-server-$(environment)"
 - name: subscriptionEndpoint
   type: string
-  default: "DTS-SHAREDSERVICES-${{ upper($(environment)) }}"
 - name: keyvaultName
   type: string
   default: "mi-vault-$(environment)"

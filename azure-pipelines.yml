@@ -63,6 +63,8 @@ stages:
   condition: and(succeeded('build'), ne(variables['build.sourceBranch'], 'refs/heads/master'))
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
+    parameters:
+      subscriptionEndpoint: "DTS-SHAREDSERVICES-${{ upper($(environment)) }}"
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
       environment: $(environment)
