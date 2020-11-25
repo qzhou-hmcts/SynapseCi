@@ -11,6 +11,7 @@ parameters:
   type: string
 - name: resourceGroup
   type: string
+  default: mi-$(environment)-rg
 - name: keyvaultName
   type: string
   default: mi-vault-$(environment)
