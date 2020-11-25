@@ -94,7 +94,6 @@ stages:
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
-      environment: 'stg'
       subscriptionEndpoint: DTS-SHAREDSERVICES-STG
       databaseServerName: $(sqlsrvrName)
       databaseName: 'mi-datawarehouse-db-stg'
@@ -128,7 +127,6 @@ stages:
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
-      environment: prod
       subscriptionEndpoint: DTS-SHAREDSERVICES-STG
       databaseServerName: $(sqlsrvrName)
       databaseName: 'mi-datawarehouse-db-prod'
