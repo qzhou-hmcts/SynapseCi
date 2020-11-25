@@ -67,22 +67,16 @@ stages:
       subscriptionEndpoint: $(azure.subscription.endpoint)
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
-      environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
       adfName: mi-ingestion-adf-$(environment)
-      resourceGroup: mi-$(environment)-rg
       adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistent$(environment).blob.core.windows.net"
        -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-$(environment).database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-$(environment);Database=mi-datawarehouse-db-$(environment);Connection Timeout=30"'
       adfFolder: mi-ccd-datafactory-test
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      databaseServerName: 'mi-datawarehouse-server-$(environment)'
-      databaseName: 'mi-datawarehouse-db-$(environment)'
       adfName: mi-ingestion-adf-$(environment)
       resourceGroup: mi-$(environment)-rg
-      keyvaultName: 'mi-vault-$(environment)'
-      ssKeyvaultName: 'ss-vault-$(environment)'
 
 
 - stage: 'DeployStaging'
@@ -102,10 +96,8 @@ stages:
       keyvaultName: 'mi-vault-stg'
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
-      environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
       adfName: mi-ccd-datafactory-stg
-      resourceGroup: mi-stg-rg
       adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistent$(environment).blob.core.windows.net"
        -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-$(environment).database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-$(environment);Database=mi-datawarehouse-db-$(environment);Connection Timeout=30"'
   - template: pipeline/templates/jobs/integration-tests-job.yml
@@ -135,10 +127,8 @@ stages:
       keyvaultName: 'mi-vault-prod'
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
-      environment: prod
       subscriptionEndpoint: $(azure.subscription.endpoint)
       adfName: mi-ccd-datafactory-prod
-      resourceGroup: mi-prod-rg
       adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistent$(environment).blob.core.windows.net"
       -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-$(environment).database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-$(environment);Database=mi-datawarehouse-db-$(environment);Connection Timeout=30"'
  

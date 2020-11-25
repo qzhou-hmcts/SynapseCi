@@ -29,7 +29,7 @@ jobs:
     variables:
       sqlProjName: ${{ parameters.projectName }}
       sqlDwDatabaseName: ${{ parameters.databaseName }}
-    environment: $(environment)
+      environment: $(environment)
     strategy:
       runOnce:
         deploy:

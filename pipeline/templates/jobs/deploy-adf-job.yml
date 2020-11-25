@@ -1,12 +1,11 @@
 parameters:
-- name: environment
-  type: string
 - name: subscriptionEndpoint
   type: string
 - name: adfName
   type: string
 - name: resourceGroup
   type: string
+  default: mi-$(environment)-rg
 - name: adfOverrideParameters
   type: string
 - name: adfFolder
@@ -20,7 +19,6 @@ jobs:
 
   variables:
     packageWheelName: 'none'
-  environment: ${{ parameters.environment }}
   strategy:
     runOnce:
       deploy:
