@@ -19,6 +19,7 @@ jobs:
 
   variables:
     packageWheelName: 'none'
+  environment: $(environment)
   strategy:
     runOnce:
       deploy:
