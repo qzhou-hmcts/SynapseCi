@@ -58,17 +58,19 @@ stages:
 
 - stage: 'Deploy'
   displayName: 'Deploy project'
+  variables:
+    environment: test
   condition: and(succeeded('build'), ne(variables['build.sourceBranch'], 'refs/heads/master'))
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
       environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      databaseServerName: 'mi-datawarehouse-server-test'
-      databaseName: 'mi-datawarehouse-db-test'
+      databaseServerName: mi-datawarehouse-server-$(environment)
+      databaseName: mi-datawarehouse-db-$(environment)
       projectName: 'synapse'
       artifactName: 'sql_dw_dacpac'
-      keyvaultName: 'mi-vault-test'
+      keyvaultName: mi-vault-$(environment)
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
       environment: $(environment)
