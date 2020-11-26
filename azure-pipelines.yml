@@ -73,7 +73,7 @@ stages:
       adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistent$(environment).blob.core.windows.net"
        -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-$(environment).database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-$(environment);Database=mi-datawarehouse-db-$(environment);Connection Timeout=30"'
       adfFolder: mi-ccd-datafactory-test
-      env: test
+      env: $(environment)
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
@@ -89,10 +89,12 @@ stages:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
+      env: test
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       adfName: mi-synapse-datafactory-$(environment)
+      env: $(environment)
       adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistent$(environment).blob.core.windows.net"
        -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-$(environment).database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-$(environment);Database=mi-datawarehouse-db-$(environment);Connection Timeout=30"'
   - template: pipeline/templates/jobs/integration-tests-job.yml
@@ -110,10 +112,12 @@ stages:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
+      env: $(environment)
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       adfName: mi-synapse-datafactory-$(environment)
+      env: $(environment)
       adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistent$(environment).blob.core.windows.net"
       -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-$(environment).database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-$(environment);Database=mi-datawarehouse-db-$(environment);Connection Timeout=30"'
  
