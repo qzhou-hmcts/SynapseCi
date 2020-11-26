@@ -11,6 +11,8 @@ parameters:
 - name: adfFolder
   type: string
   default: ./
+- name: env
+  type: string
 jobs:
 - deployment: deploy_adf
   dependsOn: deploy_azuresqldw
@@ -19,7 +21,7 @@ jobs:
 
   variables:
     packageWheelName: 'none'
-  environment: $(environment)
+  environment: ${{ parameters.env }}
   strategy:
     runOnce:
       deploy:

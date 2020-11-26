@@ -19,7 +19,8 @@ parameters:
 - name: readerGroup
   type: string
   default: "DTS Readers Data Platform Nonprod"
-
+- name: env
+  type: string
 jobs:
   - deployment: deploy_azuresqldw
     displayName: 'Deploy to AzureSQLDW'
@@ -29,7 +30,7 @@ jobs:
     variables:
       sqlProjName: ${{ parameters.projectName }}
       sqlDwDatabaseName: ${{ parameters.databaseName }}
-    environment: $(environment)
+    environment: ${{ parameters.env }}
     strategy:
       runOnce:
         deploy:
