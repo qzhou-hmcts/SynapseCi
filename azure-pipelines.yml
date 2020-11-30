@@ -67,7 +67,7 @@ stages:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       env: test
       agentPool: hmcts-ss-test
-      databaseServerName: 10.141.32.4:1433
+
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)

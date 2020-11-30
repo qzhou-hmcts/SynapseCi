@@ -10,7 +10,7 @@ parameters:
   default: "mi-datawarehouse-db-$(environment)"
 - name: databaseServerName
   type: string
-  default: "mi-datawarehouse-server-$(environment)"
+  default: '$(mi-datawarehouse-server-admin-user)'
 - name: subscriptionEndpoint
   type: string
 - name: keyvaultName
@@ -51,6 +51,7 @@ jobs:
               azureSubscriptionEndpoint: $(azure.subscription.endpoint)
               keyVaultName: ${{ parameters.keyvaultName }}
               azureSecreKeys: '*'
+              runAsPreJob: true
           - task: DownloadBuildArtifacts@0
             inputs:
               downloadPath: $(System.ArtifactsDirectory)
@@ -80,7 +81,7 @@ jobs:
               azurePowerShellVersion: LatestVersion
               failOnStandardError: true
               ScriptArguments:
-                -tsn:${{parameters.databaseServerName }}.database.windows.net
+                -tsn:${{parameters.databaseServerName }}
                 -tdn:${{ parameters.databaseName }}
                 -tu:$(mi-datawarehouse-server-admin-user)
                 -tp:'$(mi-datawarehouse-server-admin-password)'
