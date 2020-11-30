@@ -20,12 +20,15 @@ parameters:
   default: ss-vault-$(environment)
 - name: pipelineName
   type: string
+- name: agentPool
+  type: string
+  default: hmcts-ss-sandbox
 
 jobs:
 - job: run_integration_tests
   displayName: 'Run integration tests'
   dependsOn: deploy_adf
-  pool: hmcts-ss-sandbox
+  pool: ${{ parameters.agentPool }}
 
   variables:
     pythonWorkingDir: './'
@@ -39,12 +42,12 @@ jobs:
     displayName: 'Install msodbc'
   - template: ../tasks/vault-secrets.yaml
     parameters: 
-      azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+      azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
       keyVaultName: ${{ parameters.keyvaultName }}
       azureSecreKeys: '*'
   - template: ../tasks/vault-secrets.yaml
     parameters:
-      azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+      azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
       keyVaultName: ${{ parameters.ssKeyvaultName }}
       azureSecreKeys: '*'
   # - task: UsePythonVersion@0

@@ -67,7 +67,6 @@ stages:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       env: test
       agentPool: hmcts-ss-test
-
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
@@ -80,6 +79,7 @@ stages:
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
       adfName: mi-ingestion-adf-$(environment)
+      agentPool: hmcts-ss-test
       pipelineName: load_payment_bs_envelope_case_pipeline
 
 - stage: 'DeployStaging'
