@@ -13,6 +13,8 @@ parameters:
   default: ./
 - name: env
   type: string
+  default: $(environment)
+
 jobs:
 - deployment: deploy_adf
   dependsOn: deploy_azuresqldw
