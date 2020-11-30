@@ -22,11 +22,14 @@ parameters:
 - name: env
   type: string
   default: $(environment)
+- name: agentPool
+  type: string
+  default: hmcts-ss-sandbox
 jobs:
   - deployment: deploy_azuresqldw
     displayName: 'Deploy to AzureSQLDW'
     # condition: eq(variables['build.sourceBranch'], 'refs/heads/master')  #disable job for testing
-    pool: hmcts-ss-sandbox
+    pool: ${{ parameters.agentPool }}
 
     variables:
       sqlProjName: ${{ parameters.projectName }}
