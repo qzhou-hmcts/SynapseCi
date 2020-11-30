@@ -58,7 +58,7 @@ jobs:
               targetType: filePath
               filePath: '$(Pipeline.Workspace)/self/_scripts/deploySqlPackage.sh'
             env:
-              ServerName: ${{parameters.databaseServerName }}.database.windows.net
+              ServerName: ${{parameters.databaseServerName }}
               DatabaseName: ${{ parameters.databaseName }}
               SqlUsername: '$(mi-datawarehouse-server-admin-user)'
               SqlPassword: '$(mi-datawarehouse-server-admin-password)'
