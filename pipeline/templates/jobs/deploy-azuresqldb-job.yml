@@ -10,7 +10,7 @@ parameters:
   default: "mi-datawarehouse-db-$(environment)"
 - name: databaseServerName
   type: string
-  default: '$(mi-datawarehouse-server-admin-user)'
+  default: '$(mi-datawarehouse-server)'
 - name: subscriptionEndpoint
   type: string
 - name: keyvaultName
