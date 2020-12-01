@@ -66,13 +66,17 @@ jobs:
     workingDirectory: $(pythonWorkingDir)
     displayName: 'Install requirements'
   - task: AzurePowerShell@4
-    displayName: 'PipelineExecutor'
+    name: 'PipelineExecutor'
+    displayName: 'PS Execute ADF pipeline'
     inputs:
       azureSubscription: ${{ parameters.subscriptionEndpoint }}
       ScriptPath: '$(pythonWorkingDir)/_scripts/executeDataFactoryPipeline.ps1'
       ScriptArguments: '-PipelineName ${{parameters.pipelineName }} -ResourceGroupName ${{parameters.resourceGroup }} -DataFactoryName ${{ parameters.adfName }}'
       azurePowerShellVersion: LatestVersion
-  - script: make test
+  - script: |
+      echo "pipeline is $PIPELINE_EXECUTION_STATUS"
+      echo "pipeline is $(PipelineExecutor.pipelineExecutionStatus)"
+      make test
     workingDirectory: $(pythonWorkingDir)
     env:
       SQL_SERVER_NAME: ${{parameters.databaseServerName }}
@@ -85,7 +89,7 @@ jobs:
       AZ_SUBSCRIPTION_ID: ${{ parameters.subscriptionEndpoint }}
       AZ_RESOURCE_GROUP_NAME: ${{parameters.resourceGroup }}
       AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
-      PIPELINE_EXECUTION_SATTUS: $(PipelineExecutor.pipelineExecutionStatus)
+      PIPELINE_EXECUTION_STATUS: $(PipelineExecutor.pipelineExecutionStatus)
     displayName: 'Run integration tests'
 
   - script: make coverage
