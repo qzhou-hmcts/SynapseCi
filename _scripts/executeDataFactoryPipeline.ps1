@@ -19,6 +19,9 @@ param
     [parameter(Mandatory = $false)] [String] $ResourceGroupName,
     [parameter(Mandatory = $false)] [String] $DataFactoryName
 )
+
+Install-Module -Name Az.DataFactory -RequiredVersion 1.0.0 -AllowClobber -Force
+
 Write-Host "Executing pipeline with name $PipelineName"
 $runId = Invoke-AzDataFactoryV2Pipeline -ResourceGroupName mi-test-rg -DataFactoryName mi-ingestion-adf-test -PipelineName $PipelineName
 Write-Host "Executed pipeline with execution id $runId"
