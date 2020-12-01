@@ -77,7 +77,7 @@ stages:
       env: test
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
-      subscriptionEndpoint: $(azure.subscription.endpoint)
+      subscriptionEndpoint: DTS-SHAREDSERVICES-TEST
       adfName: mi-ingestion-adf-$(environment)
       agentPool: hmcts-ss-test
       pipelineName: load_payment_bs_envelope_case_pipeline
