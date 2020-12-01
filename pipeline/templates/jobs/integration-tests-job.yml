@@ -69,7 +69,7 @@ jobs:
     displayName: 'PipelineExecutor'
     inputs:
       azureSubscription: ${{ parameters.subscriptionEndpoint }}
-      ScriptPath: '$(Pipeline.Workspace)/self/_scripts/executeDataFactoryPipeline.ps1'
+      ScriptPath: '$(pythonWorkingDir)/_scripts/executeDataFactoryPipeline.ps1'
       ScriptArguments: '-PipelineName ${{parameters.pipelineName }} -ResourceGroupName ${{parameters.resourceGroup }} -DataFactoryName ${{ parameters.adfName }}'
       azurePowerShellVersion: LatestVersion
   - script: make test
