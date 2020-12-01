@@ -1,17 +1,20 @@
 parameters:
-- name: environment
-  type: string
 - name: subscriptionEndpoint
   type: string
 - name: adfName
   type: string
 - name: resourceGroup
   type: string
+  default: mi-$(environment)-rg
 - name: adfOverrideParameters
   type: string
 - name: adfFolder
   type: string
   default: ./
+- name: env
+  type: string
+  default: $(environment)
+
 jobs:
 - deployment: deploy_adf
   dependsOn: deploy_azuresqldw
@@ -20,7 +23,7 @@ jobs:
 
   variables:
     packageWheelName: 'none'
-  environment: ${{ parameters.environment }}
+  environment: ${{ parameters.env }}
   strategy:
     runOnce:
       deploy:

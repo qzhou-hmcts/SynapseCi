@@ -25,8 +25,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   sqlDwPath: 'synapse'
-  azure.subscription.endpoint: 'DTS-SHAREDSERVICES-TEST'
-  keyvault.name: 'mi-vault-test'
+  azure.subscription.endpoint: 'DTS-SHAREDSERVICES-SBOX'
 stages:
 - stage: 'build'
   displayName: 'Validate project'
@@ -58,87 +57,71 @@ stages:
 
 - stage: 'Deploy'
   displayName: 'Deploy project'
+  variables:
+    environment: test
+    azure.subscription.endpoint: 'DTS-SHAREDSERVICES-TEST'
   condition: and(succeeded('build'), ne(variables['build.sourceBranch'], 'refs/heads/master'))
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
-      environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      databaseServerName: 'mi-datawarehouse-server-test'
-      databaseName: 'mi-datawarehouse-db-test'
-      projectName: 'synapse'
-      artifactName: 'sql_dw_dacpac'
-      keyvaultName: 'mi-vault-test'
+      env: test
+      agentPool: hmcts-ss-test
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
-      environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      adfName: mi-ingestion-adf-test
-      resourceGroup: mi-test-rg
-      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistenttest.blob.core.windows.net"
-       -mi_synapse_kv_connectionString "Server=tcp:mi-datawarehouse-server-test.database.windows.net,1433;Initial Catalog=mi-datawarehouse-db-test;Persist Security Info=False;User ID=mi-server-admin;Password=$(sqlsrvrPassword);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" 
-       -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-test.database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-test;Database=mi-datawarehouse-db-test;Connection Timeout=30"'
+      adfName: mi-ingestion-adf-$(environment)
+      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistent$(environment).blob.core.windows.net"
+       -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-$(environment).database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-$(environment);Database=mi-datawarehouse-db-$(environment);Connection Timeout=30"'
       adfFolder: mi-ccd-datafactory-test
+      env: test
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
-      subscriptionEndpoint: $(azure.subscription.endpoint)
-      databaseServerName: 'mi-datawarehouse-server-test'
-      databaseName: 'mi-datawarehouse-db-test'
-      adfName: mi-ingestion-adf-test
-      resourceGroup: mi-test-rg
-      keyvaultName: 'mi-vault-test'
-      ssKeyvaultName: 'ss-vault-test'
-
+      subscriptionEndpoint: DTS-SHAREDSERVICES-TEST
+      adfName: mi-ingestion-adf-$(environment)
+      agentPool: hmcts-ss-test
+      pipelineName: load_payment_bs_envelope_case_pipeline
 
 - stage: 'DeployStaging'
   displayName: 'Deploy project on staging env'
   condition: and(succeeded('build'), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  variables:
+    environment: stg
+    azure.subscription.endpoint: 'DTS-SHAREDSERVICES-STG'
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
-      environment: 'stg'
-      subscriptionEndpoint: DTS-SHAREDSERVICES-STG
-      databaseServerName: $(sqlsrvrName)
-      databaseName: 'mi-datawarehouse-db-stg'
-      projectName: 'synapse'
-      artifactName: 'sql_dw_dacpac'
-      keyvaultName: 'mi-vault-stg'
+      subscriptionEndpoint: $(azure.subscription.endpoint)
+      env: test
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
-      environment: $(environment)
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      adfName: mi-ccd-datafactory-stg
-      resourceGroup: mi-stg-rg
-      adfOverrideParameters: '-AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://mipersistentstg.blob.core.windows.net"'
+      adfName: mi-synapse-datafactory-$(environment)
+      env: $(environment)
+      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistent$(environment).blob.core.windows.net"
+       -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-$(environment).database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-$(environment);Database=mi-datawarehouse-db-$(environment);Connection Timeout=30"'
   - template: pipeline/templates/jobs/integration-tests-job.yml
     parameters:
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      databaseServerName: $(sqlsrvrName)
-      databaseName: 'mi-datawarehouse-db-stg'
-      keyvaultName: 'mi-vault-stg'
-      ssKeyvaultName: 'ss-vault-stg'
-      adfName: 'mi-ccd-datafactory-stg'
-      resourceGroup: mi-stg-rg
+      adfName: mi-synapse-datafactory-$(environment)
+      pipelineName: load_payment_bs_envelope_case_pipeline
 
 - stage: 'DeployProd'
   displayName: 'Deploy production'
   condition: and(succeeded('DeployStaging'), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  variables:
+    environment: prod
+    azure.subscription.endpoint: 'DTS-SHAREDSERVICES-PROD'
   jobs:
   - template: pipeline/templates/jobs/deploy-azuresqldb-job.yml
     parameters:
-      environment: prod
-      subscriptionEndpoint: DTS-SHAREDSERVICES-STG
-      databaseServerName: $(sqlsrvrName)
-      databaseName: 'mi-datawarehouse-db-prod'
-      projectName: 'synapse'
-      artifactName: 'sql_dw_dacpac'
-      keyvaultName: 'mi-vault-prod'
+      subscriptionEndpoint: $(azure.subscription.endpoint)
+      env: $(environment)
   - template: pipeline/templates/jobs/deploy-adf-job.yml
     parameters:
-      environment: prod
       subscriptionEndpoint: $(azure.subscription.endpoint)
-      adfName: mi-ccd-datafactory-prod
-      resourceGroup: mi-prod-rg
-      adfOverrideParameters: '-AzureBlobStorage1_properties_typeProperties_serviceEndpoint "https://mipersistentprod.blob.core.windows.net"'
-
+      adfName: mi-synapse-datafactory-$(environment)
+      env: $(environment)
+      adfOverrideParameters: '-mi_persistence_storage_mi_properties_typeProperties_serviceEndpoint "https://mipersistent$(environment).blob.core.windows.net"
+      -MI_synapse_mi_connectionString "Server=tcp:mi-datawarehouse-server-$(environment).database.windows.net,1433;;Initial Catalog=mi-datawarehouse-db-$(environment);Database=mi-datawarehouse-db-$(environment);Connection Timeout=30"'
  
