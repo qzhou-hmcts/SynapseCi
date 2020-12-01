@@ -10,7 +10,7 @@ import os
 
 def test_pipeline_succeeded():
     """Test verify pipeline execution, Pipeline was executed using executeDataFactoryPipeline.ps1 and result set on pipelineExecutionStatus"""
-    run_status = os.getenv("PIPELINE_EXECUTION_SATTUS")
+    run_status = os.getenv("PIPELINE_EXECUTION_STATUS")
 
     assert run_status == "Succeeded"
 
