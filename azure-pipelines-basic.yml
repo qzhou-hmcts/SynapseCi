@@ -1,0 +1,62 @@
+# .NET Desktop
+# Build and run tests for .NET Desktop or Windows classic desktop solutions.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+
+trigger:
+- master
+
+resources:
+  repositories:
+  - repository: adf_project
+    type: github
+    endpoint: hmcts
+    name: qzhou-hmcts/datafactory
+    ref: adf_publish
+    trigger:  # CI trigger for this repository, no CI trigger if skipped (only works for Azure Repos)
+      branches: 
+        include: [ adf_publish ]
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  sqlDwPath: 'synapse'
+  azure.subscription.endpoint: '$(subscription)'
+  keyvault.name: 'mi-vault-test'
+stages:
+- stage: 'build'
+  displayName: 'Validate project'
+  # condition: and(always(), eq(variables['Build.Reason'], 'PullRequest'))
+  jobs:
+  - job: 'validate_sql_packages'
+    displayName: 'Validate sql project'
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: VSBuild@1
+      inputs:
+        solution: '$(solution)'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+    - task: VSTest@2
+      inputs:
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(sqlDwPath)/bin/$(buildConfiguration)/synapse.dacpac'
+        ArtifactName: 'sql_dw_dacpac'
+      displayName: 'Publish SQL DACPAC'  
+
+
+
+ 
+ 
