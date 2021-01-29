@@ -10,8 +10,8 @@ resources:
   repositories:
   - repository: adf_project
     type: github
-    endpoint: hmcts
-    name: qzhou-hmcts/datafactory
+    endpoint: bamboox2go
+    name: bamboox2go/ADF-Devops
     ref: adf_publish
     trigger:  # CI trigger for this repository, no CI trigger if skipped (only works for Azure Repos)
       branches: 
